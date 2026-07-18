@@ -1,5 +1,6 @@
 package ac.za.cput.pulseup2026.factory;
 
+public class AppointmentFactory {
 import ac.za.cput.pulseup2026.domain.Appointment;
 import ac.za.cput.pulseup2026.domain.Staff;
 import ac.za.cput.pulseup2026.domain.TimeSlot;

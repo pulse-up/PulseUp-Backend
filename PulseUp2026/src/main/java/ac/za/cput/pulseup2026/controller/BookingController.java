@@ -1,5 +1,6 @@
 package ac.za.cput.pulseup2026.controller;
 
+public class BookingController {
 import ac.za.cput.pulseup2026.domain.Appointment;
 import ac.za.cput.pulseup2026.service.BookingService;
 import org.springframework.web.bind.annotation.*;

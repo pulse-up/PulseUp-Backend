@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 @Entity
 
 public class Student extends User {
+
+}
+
     private String studId;
     private String name;
     private String email;

@@ -1,5 +1,6 @@
 package ac.za.cput.pulseup2026.factory;
 
+public class UserFactory {
 import ac.za.cput.pulseup2026.domain.User;
 public class UserFactory {
 
