@@ -1,83 +1,105 @@
 package ac.za.cput.pulseup2026.domain;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
 import java.time.LocalTime;
 
-
-@Embeddable
+@Entity
+@Table(name = "time_slots")
 public class TimeSlot {
-    
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long slotId;
+
+    @ManyToOne
+    @JoinColumn(name = "staff_id", nullable = false)
+    private Staff staff;
+
+    private LocalDate slotDate;
+
     private LocalTime startTime;
+
     private LocalTime endTime;
-    private String dayOfWeek;
-    private Boolean isAvailable = true;
-    private LocalDateTime slotDate;
-    
-    public TimeSlot() {
+
+    private boolean available = true;
+
+    protected TimeSlot() {
     }
-    
-    public TimeSlot(LocalTime startTime, LocalTime endTime) {
-        this.startTime = startTime;
-        this.endTime = endTime;
+
+    private TimeSlot(Builder builder) {
+        this.staff = builder.staff;
+        this.slotDate = builder.slotDate;
+        this.startTime = builder.startTime;
+        this.endTime = builder.endTime;
     }
-    
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public Long getSlotId() {
+        return slotId;
+    }
+
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public LocalDate getSlotDate() {
+        return slotDate;
+    }
+
     public LocalTime getStartTime() {
         return startTime;
     }
-    
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-    
+
     public LocalTime getEndTime() {
         return endTime;
     }
-    
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
+
+    public boolean isAvailable() {
+        return available;
     }
-    
-    public String getDayOfWeek() {
-        return dayOfWeek;
+
+    public void reserve() {
+        this.available = false;
     }
-    
-    public void setDayOfWeek(String dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
+
+    public void release() {
+        this.available = true;
     }
-    
-    public Boolean getIsAvailable() {
-        return isAvailable;
-    }
-    
-    public void setIsAvailable(Boolean isAvailable) {
-        this.isAvailable = isAvailable;
-    }
-    
-    public LocalDateTime getSlotDate() {
-        return slotDate;
-    }
-    
-    public void setSlotDate(LocalDateTime slotDate) {
-        this.slotDate = slotDate;
-    }
-    
-    public boolean isValidTimeSlot() {
-        return startTime != null && endTime != null && startTime.isBefore(endTime);
-    }
-    
-    public boolean containsTime(LocalTime time) {
-        return time != null && !time.isBefore(startTime) && !time.isAfter(endTime);
-    }
-    
-    @Override
-    public String toString() {
-        return "TimeSlot{" +
-                "startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", dayOfWeek='" + dayOfWeek + '\'' +
-                ", isAvailable=" + isAvailable +
-                '}';
+
+    public static class Builder {
+
+        private Staff staff;
+        private LocalDate slotDate;
+        private LocalTime startTime;
+        private LocalTime endTime;
+
+        public Builder staff(Staff staff) {
+            this.staff = staff;
+            return this;
+        }
+
+        public Builder slotDate(LocalDate slotDate) {
+            this.slotDate = slotDate;
+            return this;
+        }
+
+        public Builder startTime(LocalTime startTime) {
+            this.startTime = startTime;
+            return this;
+        }
+
+        public Builder endTime(LocalTime endTime) {
+            this.endTime = endTime;
+            return this;
+        }
+
+        public TimeSlot build() {
+            return new TimeSlot(this);
+        }
     }
 }
-

@@ -2,126 +2,90 @@ package ac.za.cput.pulseup2026.domain;
 
 import jakarta.persistence.*;
 
-
 @Entity
+@Table(name = "admins")
 public class Admin extends User {
-    
-    private String adminId;
-    private String role;
-    private String permissions;
+
+    @Column(nullable = false, unique = true)
+    private String adminNumber;
+
     private String department;
-    private Boolean canManageUsers = false;
-    private Boolean canManageAppointments = false;
 
-    
-    // Private constructor for Builder pattern
-    private Admin(AdminBuilder builder) {
-        super();
-        this.adminId = builder.adminId;
-        this.role = builder.role;
-        this.permissions = builder.permissions;
+    protected Admin() {
+    }
+
+    private Admin(Builder builder) {
+        super(
+                builder.email,
+                builder.passwordHash,
+                builder.firstName,
+                builder.lastName,
+                builder.phoneNumber
+        );
+
+        this.adminNumber = builder.adminNumber;
         this.department = builder.department;
-        this.canManageUsers = builder.canManageUsers;
-        this.canManageAppointments = builder.canManageAppointments;
-
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
 
-    public Admin() {
-        super();
+    public String getAdminNumber() {
+        return adminNumber;
     }
-    
 
-    public static AdminBuilder adminBuilder() {
-        return new AdminBuilder();
-    }
-    
-    public String getAdminId() {
-        return adminId;
-    }
-    
-    public String getRole() {
-        return role;
-    }
-    
-    public String getPermissions() {
-        return permissions;
-    }
-    
     public String getDepartment() {
         return department;
     }
-    
-    public Boolean getCanManageUsers() {
-        return canManageUsers;
-    }
-    
-    public Boolean getCanManageAppointments() {
-        return canManageAppointments;
-    }
-    
 
-    
-    @Override
-    public String toString() {
-        return "Admin{" +
-                "adminId='" + adminId + '\'' +
-                ", role='" + role + '\'' +
-                ", department='" + department + '\'' +
-                ", canManageUsers=" + canManageUsers +
-                ", canManageAppointments=" + canManageAppointments +
-                ", email='" + this.getEmail() + '\'' +
-                '}';
-    }
+    public static class Builder {
 
-
-    public static class AdminBuilder {
-        private String adminId;
-        private String role;
-        private String permissions;
+        private String email;
+        private String passwordHash;
+        private String firstName;
+        private String lastName;
+        private String phoneNumber;
+        private String adminNumber;
         private String department;
-        private Boolean canManageUsers = false;
-        private Boolean canManageAppointments = false;
 
-
-        public AdminBuilder() {
-        }
-
-        public AdminBuilder adminId(String adminId) {
-            this.adminId = adminId;
+        public Builder email(String email) {
+            this.email = email;
             return this;
         }
 
-        public AdminBuilder role(String role) {
-            this.role = role;
+        public Builder passwordHash(String passwordHash) {
+            this.passwordHash = passwordHash;
             return this;
         }
 
-        public AdminBuilder permissions(String permissions) {
-            this.permissions = permissions;
+        public Builder firstName(String firstName) {
+            this.firstName = firstName;
             return this;
         }
 
-        public AdminBuilder department(String department) {
+        public Builder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public Builder phoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+            return this;
+        }
+
+        public Builder adminNumber(String adminNumber) {
+            this.adminNumber = adminNumber;
+            return this;
+        }
+
+        public Builder department(String department) {
             this.department = department;
             return this;
         }
-
-        public AdminBuilder canManageUsers(Boolean canManageUsers) {
-            this.canManageUsers = canManageUsers;
-            return this;
-        }
-
-        public AdminBuilder canManageAppointments(Boolean canManageAppointments) {
-            this.canManageAppointments = canManageAppointments;
-            return this;
-        }
-
-
 
         public Admin build() {
             return new Admin(this);
         }
     }
 }
-

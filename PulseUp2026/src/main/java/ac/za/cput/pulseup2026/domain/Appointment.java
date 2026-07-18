@@ -1,83 +1,55 @@
 package ac.za.cput.pulseup2026.domain;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "appointments")
-
 public class Appointment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long appointmentId;
 
-    // Student/User who booked the appointment
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "student_id", nullable = false)
+    private Student student;
 
-    // Staff member handling the appointment
     @ManyToOne
-    @JoinColumn(name = "staff_id")
-    private Staff staff;
-
-    // Embedded TimeSlot
-    @Embedded
+    @JoinColumn(name = "slot_id", nullable = false)
     private TimeSlot timeSlot;
 
     private String appointmentType;
-    private String status;
+
+    private String status = "PENDING";
+
     private String notes;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Default constructor required by JPA
-    public Appointment() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+    protected Appointment() {
     }
 
-    // Builder constructor
-    private Appointment(AppointmentBuilder builder) {
-        this.appointmentId = builder.appointmentId;
-        this.user = builder.user;
-        this.staff = builder.staff;
+    private Appointment(Builder builder) {
+        this.student = builder.student;
         this.timeSlot = builder.timeSlot;
         this.appointmentType = builder.appointmentType;
-        this.status = builder.status;
         this.notes = builder.notes;
-        this.createdAt = builder.createdAt != null
-                ? builder.createdAt
-                : LocalDateTime.now();
-
-        this.updatedAt = builder.updatedAt != null
-                ? builder.updatedAt
-                : LocalDateTime.now();
+        this.status = "PENDING";
+        this.createdAt = LocalDateTime.now();
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+    public static Builder builder() {
+        return new Builder();
     }
 
-    // Builder method
-    public static AppointmentBuilder builder() {
-        return new AppointmentBuilder();
-    }
-
-    // Getters
     public Long getAppointmentId() {
         return appointmentId;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public Staff getStaff() {
-        return staff;
+    public Student getStudent() {
+        return student;
     }
 
     public TimeSlot getTimeSlot() {
@@ -100,77 +72,39 @@ public class Appointment {
         return createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
+    public void updateStatus(String status) {
+        this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "Appointment{" +
-                "appointmentId=" + appointmentId +
-                ", appointmentType='" + appointmentType + '\'' +
-                ", status='" + status + '\'' +
-                ", user=" + user +
-                ", staff=" + staff +
-                ", timeSlot=" + timeSlot +
-                '}';
+    public void cancel() {
+        this.status = "CANCELLED";
+        this.timeSlot.release();
     }
 
-    // Builder Class
-    public static class AppointmentBuilder {
+    public static class Builder {
 
-        private Long appointmentId;
-        private User user;
-        private Staff staff;
+        private Student student;
         private TimeSlot timeSlot;
         private String appointmentType;
-        private String status = "PENDING";
         private String notes;
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
 
-        public AppointmentBuilder appointmentId(Long appointmentId) {
-            this.appointmentId = appointmentId;
+        public Builder student(Student student) {
+            this.student = student;
             return this;
         }
 
-        public AppointmentBuilder user(User user) {
-            this.user = user;
-            return this;
-        }
-
-        public AppointmentBuilder staff(Staff staff) {
-            this.staff = staff;
-            return this;
-        }
-
-        public AppointmentBuilder timeSlot(TimeSlot timeSlot) {
+        public Builder timeSlot(TimeSlot timeSlot) {
             this.timeSlot = timeSlot;
             return this;
         }
 
-        public AppointmentBuilder appointmentType(String appointmentType) {
+        public Builder appointmentType(String appointmentType) {
             this.appointmentType = appointmentType;
             return this;
         }
 
-        public AppointmentBuilder status(String status) {
-            this.status = status;
-            return this;
-        }
-
-        public AppointmentBuilder notes(String notes) {
+        public Builder notes(String notes) {
             this.notes = notes;
-            return this;
-        }
-
-        public AppointmentBuilder createdAt(LocalDateTime createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public AppointmentBuilder updatedAt(LocalDateTime updatedAt) {
-            this.updatedAt = updatedAt;
             return this;
         }
 
@@ -178,6 +112,4 @@ public class Appointment {
             return new Appointment(this);
         }
     }
-
 }
-
