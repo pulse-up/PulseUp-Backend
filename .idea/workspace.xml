@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BackgroundAgentGlobalSettings">
+    <option name="selectedModelId" value="auto" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="cabcf1e4-b386-49f2-80e2-41ef45af0bfe" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/DOMAIN_ARCHITECTURE.md" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/DOMAIN_ARCHITECTURE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/controller/AdminController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/controller/AuthController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/controller/BookingController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/domain/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/domain/Admin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/domain/Appointment.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/domain/Appointment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/domain/Staff.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/domain/Staff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/domain/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/domain/Student.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/domain/TimeSlot.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/domain/TimeSlot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/domain/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/factory/AppointmentFactory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/factory/UserFactory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/repository/AppointmentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/repository/AppointmentRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/repository/IAppointmentRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/repository/IRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/repository/ITimeSlotRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/repository/IUserRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/repository/TimeSlotRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/service/AuthService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/service/BookingService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/java/ac/za/cput/pulseup2026/service/QueueService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/controller/BookingController.class" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/controller/BookingController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/domain/Admin.class" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/domain/Admin.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/domain/Appointment.class" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/domain/Appointment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/domain/Staff.class" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/domain/Staff.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/domain/Student.class" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/domain/Student.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/domain/TimeSlot.class" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/domain/TimeSlot.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/domain/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/domain/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/factory/AppointmentFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/factory/AppointmentFactory.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/repository/AppointmentRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/repository/AppointmentRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/repository/IAppointmentRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/repository/IRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/repository/ITimeSlotRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/repository/IUserRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/repository/TimeSlotRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/repository/TimeSlotRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/repository/UserRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/repository/UserRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/service/AuthService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/service/BookingService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/ac/za/cput/pulseup2026/service/QueueService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PulseUp2026/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/PulseUp2026/target/classes/application.properties" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/Users/Tiyan/Downloads/PulseUp-Backend" value="3Gar5cfEIyRiwiYrlUy3VSz31K6" />
+    </persistenceIdMap>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ngwanatiyani&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/pulse-up/PulseUp-Backend.git&quot;,
+    &quot;accountId&quot;: &quot;f4dfe623-ec26-40dc-80cc-9550668ffac3&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="3Gar5cfEIyRiwiYrlUy3VSz31K6" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectSessionTemplates">
+    <option name="panelTemplate">
+      <template>
+        <option name="modeId" value="Agent" />
+        <option name="model">
+          <model>
+            <option name="modelType" value="builtin_id" />
+            <option name="modelValue" value="auto" />
+          </model>
+        </option>
+        <option name="targetType" value="BACKGROUND" />
+        <option name="worktreeMode" value="WORKSPACE" />
+      </template>
+    </option>
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "HTTP Request.generated-requests | #9.executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.PulseUp2026Application.executor": "Debug",
+    "copilot.chat.legacySessionMetadata.migrated": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunDashboard">
+    <option name="configurationStatuses">
+      <map>
+        <entry key="HttpClient.HttpRequestRunConfigurationType">
+          <value>
+            <map>
+              <entry key="generated-requests | #9" value="STOPPED" />
+            </map>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.PulseUp2026Application">
+    <configuration name="generated-requests | #9" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" executionIdentifier="#9" index="9" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="PulseUp2026Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="PulseUp2026" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="ac.za.cput.pulseup2026.PulseUp2026Application" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="HTTP Request.generated-requests | #9" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.23892.409" />
+        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-IU-252.23892.409" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cabcf1e4-b386-49f2-80e2-41ef45af0bfe" name="Changes" comment="" />
+      <created>1784220343162</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1784220343162</updated>
+      <workItem from="1784220344905" duration="1343000" />
+      <workItem from="1784222275349" duration="6953000" />
+      <workItem from="1784230710646" duration="505000" />
+      <workItem from="1784270822316" duration="53000" />
+      <workItem from="1784363186448" duration="6529000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,27 @@
+GET http://localhost:8080/api/students
+Content-Type: application/json
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+content-length: 268
+
+{
+  "studentNumber": "",
+  "course": "",
+  "campus": "",
+  "emergencyContactName": "",
+  "emergencyContactPhone": "",
+  "healthPoints": 0,
+  "userId": 0,
+  "email": "",
+  "passwordHash": "",
+  "firstName": "",
+  "lastName": "",
+  "phoneNumber": "",
+  "active": false
+}
+
+<> 2026-07-18T121153.200.json
+
+###
+
