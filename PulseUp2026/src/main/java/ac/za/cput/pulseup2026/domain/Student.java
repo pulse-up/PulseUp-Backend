@@ -2,95 +2,140 @@ package ac.za.cput.pulseup2026.domain;
 
 import jakarta.persistence.*;
 
-
 @Entity
-
+@Table(name = "students")
 public class Student extends User {
-    private String studId;
-    private String name;
-    private String email;
-    private String password;
-    private String number;
 
-    //  Builder pattern
+    @Column(nullable = false, unique = true)
+    private String studentNumber;
+
+    private String course;
+
+    private String campus;
+
+    private String emergencyContactName;
+
+    private String emergencyContactPhone;
+
+    private int healthPoints;
+
+    protected Student() {
+    }
+
     private Student(Builder builder) {
-        super();
-        this.studId = builder.studId;
-        this.name = builder.name;
-        this.email = builder.email;
-        this.password = builder.password;
-        this.number = builder.number;
+        super(
+                builder.email,
+                builder.passwordHash,
+                builder.firstName,
+                builder.lastName,
+                builder.phoneNumber
+        );
+
+        this.studentNumber = builder.studentNumber;
+        this.course = builder.course;
+        this.campus = builder.campus;
+        this.emergencyContactName = builder.emergencyContactName;
+        this.emergencyContactPhone = builder.emergencyContactPhone;
+        this.healthPoints = 0;
     }
 
-    public Student() {
-        super();
+    public static Builder builder() {
+        return new Builder();
     }
 
-    public void setStudId(String studId) {
-        this.studId = studId;
+    public String getStudentNumber() {
+        return studentNumber;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public String getCourse() {
+        return course;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String getCampus() {
+        return campus;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getEmergencyContactName() {
+        return emergencyContactName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getEmergencyContactPhone() {
+        return emergencyContactPhone;
     }
 
-    @Override
-    public String toString() {
-        return "Student{" +
-                "studId='" + studId + '\'' +
-                ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", number='" + number + '\'' +
-                '}';
+    public int getHealthPoints() {
+        return healthPoints;
     }
 
-    public static class Builder{
-        private String studId;
-        private String name;
+    public void addHealthPoints(int points) {
+        this.healthPoints += points;
+    }
+
+    public static class Builder {
+
         private String email;
-        private String password;
-        private String number;
-        public Builder() {}
-        public Builder studId(String studId) {
-            this.studId = studId;
-            return this;
-        }
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
+        private String passwordHash;
+        private String firstName;
+        private String lastName;
+        private String phoneNumber;
+        private String studentNumber;
+        private String course;
+        private String campus;
+        private String emergencyContactName;
+        private String emergencyContactPhone;
+
         public Builder email(String email) {
             this.email = email;
             return this;
         }
-        public Builder password(String password) {
-            this.password = password;
+
+        public Builder passwordHash(String passwordHash) {
+            this.passwordHash = passwordHash;
             return this;
         }
-        public Builder number(String number) {
-            this.number = number;
+
+        public Builder firstName(String firstName) {
+            this.firstName = firstName;
             return this;
         }
+
+        public Builder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public Builder phoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+            return this;
+        }
+
+        public Builder studentNumber(String studentNumber) {
+            this.studentNumber = studentNumber;
+            return this;
+        }
+
+        public Builder course(String course) {
+            this.course = course;
+            return this;
+        }
+
+        public Builder campus(String campus) {
+            this.campus = campus;
+            return this;
+        }
+
+        public Builder emergencyContactName(String emergencyContactName) {
+            this.emergencyContactName = emergencyContactName;
+            return this;
+        }
+
+        public Builder emergencyContactPhone(String emergencyContactPhone) {
+            this.emergencyContactPhone = emergencyContactPhone;
+            return this;
+        }
+
         public Student build() {
             return new Student(this);
-
         }
     }
-
 }
-
-
-

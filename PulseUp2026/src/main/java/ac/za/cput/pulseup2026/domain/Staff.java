@@ -2,109 +2,127 @@ package ac.za.cput.pulseup2026.domain;
 
 import jakarta.persistence.*;
 
-
 @Entity
-
+@Table(name = "staff")
 public class Staff extends User {
-    
-    private String staffId;
+
+    @Column(nullable = false, unique = true)
+    private String staffNumber;
+
     private String department;
+
     private String position;
+
     private String specialization;
+
     private String availabilityStatus = "AVAILABLE";
-    
-    // Private constructor for Builder pattern
-    private Staff(StaffBuilder builder) {
-        super();
-        this.staffId = builder.staffId;
+
+    protected Staff() {
+    }
+
+    private Staff(Builder builder) {
+        super(
+                builder.email,
+                builder.passwordHash,
+                builder.firstName,
+                builder.lastName,
+                builder.phoneNumber
+        );
+
+        this.staffNumber = builder.staffNumber;
         this.department = builder.department;
         this.position = builder.position;
         this.specialization = builder.specialization;
-        this.availabilityStatus = builder.availabilityStatus;
+        this.availabilityStatus = "AVAILABLE";
     }
-    
-    // No-arg constructor for JPA/Hibernate
-    public Staff() {
-        super();
-    }
-    
 
-    public static StaffBuilder staffBuilder() {
-        return new StaffBuilder();
+    public static Builder builder() {
+        return new Builder();
     }
-    
-    public String getStaffId() {
-        return staffId;
+
+    public String getStaffNumber() {
+        return staffNumber;
     }
-    
+
     public String getDepartment() {
         return department;
     }
-    
+
     public String getPosition() {
         return position;
     }
-    
+
     public String getSpecialization() {
         return specialization;
     }
-    
+
     public String getAvailabilityStatus() {
         return availabilityStatus;
     }
-    
-    @Override
-    public String toString() {
-        return "Staff{" +
-                "staffId='" + staffId + '\'' +
-                ", department='" + department + '\'' +
-                ", position='" + position + '\'' +
-                ", specialization='" + specialization + '\'' +
-                ", availabilityStatus='" + availabilityStatus + '\'' +
-                ", email='" + this.getEmail() + '\'' +
-                '}';
+
+    public void setAvailabilityStatus(String availabilityStatus) {
+        this.availabilityStatus = availabilityStatus;
     }
 
+    public static class Builder {
 
-    public static class StaffBuilder {
-        private String staffId;
+        private String email;
+        private String passwordHash;
+        private String firstName;
+        private String lastName;
+        private String phoneNumber;
+        private String staffNumber;
         private String department;
         private String position;
         private String specialization;
-        private String availabilityStatus = "AVAILABLE";
 
-        public StaffBuilder() {
-        }
-
-        public StaffBuilder staffId(String staffId) {
-            this.staffId = staffId;
+        public Builder email(String email) {
+            this.email = email;
             return this;
         }
 
-        public StaffBuilder department(String department) {
+        public Builder passwordHash(String passwordHash) {
+            this.passwordHash = passwordHash;
+            return this;
+        }
+
+        public Builder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public Builder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public Builder phoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+            return this;
+        }
+
+        public Builder staffNumber(String staffNumber) {
+            this.staffNumber = staffNumber;
+            return this;
+        }
+
+        public Builder department(String department) {
             this.department = department;
             return this;
         }
 
-        public StaffBuilder position(String position) {
+        public Builder position(String position) {
             this.position = position;
             return this;
         }
 
-        public StaffBuilder specialization(String specialization) {
+        public Builder specialization(String specialization) {
             this.specialization = specialization;
             return this;
         }
-
-        public StaffBuilder availabilityStatus(String availabilityStatus) {
-            this.availabilityStatus = availabilityStatus;
-            return this;
-        }
-
 
         public Staff build() {
             return new Staff(this);
         }
     }
 }
-

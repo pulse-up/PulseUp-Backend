@@ -101,8 +101,8 @@ PulseUp2026/
 ├─────────────────────────────────────────────────────┤
 │ - appointmentId (PK)                                │
 │ - appointmentCode (UNIQUE)                          │
-│ - student (FK) ─── Many-to-One ─── Student         │
-│ - staff (FK) ─── Many-to-One ─── Staff             │
+│ - student (FK) ─── Many-to-One ─── Student          │
+│ - staff (FK) ─── Many-to-One ─── Staff              │
 │ - timeSlot (EMBEDDED) ─── TimeSlot                  │
 │ - appointmentType, description                      │
 │ - status, location, notes                           │
