@@ -7,43 +7,51 @@ This document outlines the domain entity structure for the PulseUp2026 appointme
 
 ## Directory Structure
 
-```
 PulseUp2026/
 └── src/
     └── main/
-        └── java/
-            └── ac/za/cput/pulseup/
-                ├── domain/
-                │   ├── User.java (Base class)
-                │   ├── Student.java (extends User)
-                │   ├── Staff.java (extends User)
-                │   ├── Admin.java (extends User)
-                │   ├── Appointment.java
-                │   └── TimeSlot.java (@Embeddable)
-                ├── factory/
-                │   ├── UserFactory.java
-                │   └── AppointmentFactory.java
-                ├── repository/
-                │   ├── UserRepository.java
-                │   ├── AppointmentRepository.java
-                │   └── TimeSlotRepository.java
-                ├── service/
-                │   ├── AuthService.java
-                │   ├── BookingService.java
-                │   ├── QueueService.java
-                │   └── AdminService.java
-                ├── controller/
-                │   ├── AuthController.java
-                │   ├── BookingController.java
-                │   └── AdminController.java
-                └── util/
-                    ├── PasswordUtil.java
-                    ├── JwtUtil.java
-                    ├── TimeUtil.java
-                    └── RoleValidator.java
-```
-
----
+        ├── java/
+        │   └── ac/za/cput/pulseup2026/
+        │       ├── domain/
+        │       │   ├── User.java
+        │       │   ├── Student.java
+        │       │   ├── Staff.java
+        │       │   ├── Admin.java
+        │       │   ├── Appointment.java
+        │       │   └── TimeSlot.java
+        │       │
+        │       ├── factory/
+        │       │   ├── StudentFactory.java
+        │       │   ├── StaffFactory.java
+        │       │   ├── AdminFactory.java
+        │       │   ├── AppointmentFactory.java
+        │       │   └── TimeSlotFactory.java
+        │       │
+        │       ├── repository/
+        │       │   ├── StudentRepository.java
+        │       │   ├── StaffRepository.java
+        │       │   ├── AdminRepository.java
+        │       │   ├── AppointmentRepository.java
+        │       │   └── TimeSlotRepository.java
+        │       │
+        │       ├── service/
+        │       │   ├── StudentService.java
+        │       │   ├── StaffService.java
+        │       │   ├── AdminService.java
+        │       │   ├── AppointmentService.java
+        │       │   └── TimeSlotService.java
+        │       │
+        │       ├── controller/
+        │       │   ├── StudentController.java
+        │       │   ├── StaffController.java
+        │       │   ├── AdminController.java
+        │       │   ├── AppointmentController.java
+        │       │   └── TimeSlotController.java
+        │       │
+        │       └── PulseUp2026Application.java
+        │
+        └── resources/
+            └── application.properties
 
 
 
