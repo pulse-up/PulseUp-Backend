@@ -1,0 +1,122 @@
+{
+  "$schema": "https://example.invalid/pulseup-seed-catalog.schema.json",
+  "description": "Readable source catalog for the PulseUp development seed. Use seed-pulseup.http to submit these records to the API.",
+  "admin": {
+    "email": "admin@cput.ac.za",
+    "passwordSource": "IntelliJ private environment variable: adminPassword",
+    "firstName": "PulseUp",
+    "lastName": "Administrator",
+    "phoneNumber": "+27 21 440 1000",
+    "adminNumber": "ADM-2026-001",
+    "department": "Campus Health Services"
+  },
+  "staff": [
+    {
+      "reference": "generalConsultations",
+      "email": "amanda.naidoo@cput.ac.za",
+      "passwordSource": "IntelliJ private environment variable: staffPassword",
+      "firstName": "Amanda",
+      "lastName": "Naidoo",
+      "phoneNumber": "+27 21 440 1101",
+      "staffNumber": "STF-2026-001",
+      "department": "General Consultations",
+      "position": "General Practitioner",
+      "specialization": "Primary health care"
+    },
+    {
+      "reference": "reproductiveHealth",
+      "email": "lerato.mokoena@cput.ac.za",
+      "passwordSource": "IntelliJ private environment variable: staffPassword",
+      "firstName": "Lerato",
+      "lastName": "Mokoena",
+      "phoneNumber": "+27 21 440 1102",
+      "staffNumber": "STF-2026-002",
+      "department": "Reproductive Health",
+      "position": "Reproductive Health Nurse",
+      "specialization": "Sexual and reproductive health"
+    },
+    {
+      "reference": "hivVct",
+      "email": "siyabonga.dlamini@cput.ac.za",
+      "passwordSource": "IntelliJ private environment variable: staffPassword",
+      "firstName": "Siyabonga",
+      "lastName": "Dlamini",
+      "phoneNumber": "+27 21 440 1103",
+      "staffNumber": "STF-2026-003",
+      "department": "HIV VCT",
+      "position": "HIV Counsellor",
+      "specialization": "HIV counselling and testing"
+    },
+    {
+      "reference": "tbDots",
+      "email": "nomsa.khumalo@cput.ac.za",
+      "passwordSource": "IntelliJ private environment variable: staffPassword",
+      "firstName": "Nomsa",
+      "lastName": "Khumalo",
+      "phoneNumber": "+27 21 440 1104",
+      "staffNumber": "STF-2026-004",
+      "department": "TB DOTS",
+      "position": "TB Nurse",
+      "specialization": "Tuberculosis treatment and adherence"
+    },
+    {
+      "reference": "woundDressings",
+      "email": "jordan.williams@cput.ac.za",
+      "passwordSource": "IntelliJ private environment variable: staffPassword",
+      "firstName": "Jordan",
+      "lastName": "Williams",
+      "phoneNumber": "+27 21 440 1105",
+      "staffNumber": "STF-2026-005",
+      "department": "Wound Dressings",
+      "position": "Wound Care Nurse",
+      "specialization": "Acute and chronic wound care"
+    }
+  ],
+  "timeSlots": [
+    {
+      "staffReference": "generalConsultations",
+      "slotDate": "2026-07-23",
+      "startTime": "09:00",
+      "endTime": "09:20",
+      "appointmentType": "General Consultations",
+      "roomNumber": "Unit A1",
+      "estimatedDurationMinutes": 20
+    },
+    {
+      "staffReference": "reproductiveHealth",
+      "slotDate": "2026-07-23",
+      "startTime": "09:00",
+      "endTime": "09:30",
+      "appointmentType": "Reproductive Health",
+      "roomNumber": "Unit B1",
+      "estimatedDurationMinutes": 30
+    },
+    {
+      "staffReference": "hivVct",
+      "slotDate": "2026-07-23",
+      "startTime": "10:00",
+      "endTime": "10:30",
+      "appointmentType": "HIV VCT",
+      "roomNumber": "Unit C1",
+      "estimatedDurationMinutes": 30
+    },
+    {
+      "staffReference": "tbDots",
+      "slotDate": "2026-07-23",
+      "startTime": "11:00",
+      "endTime": "11:15",
+      "appointmentType": "TB DOTS",
+      "roomNumber": "Unit D1",
+      "estimatedDurationMinutes": 15
+    },
+    {
+      "staffReference": "woundDressings",
+      "slotDate": "2026-07-23",
+      "startTime": "12:00",
+      "endTime": "12:30",
+      "appointmentType": "Wound Dressings",
+      "roomNumber": "Unit E1",
+      "estimatedDurationMinutes": 30
+    }
+  ]
+}

@@ -1,0 +1,226 @@
+# Select the `local` environment before running this file.
+
+
+### 1. Bootstrap the first administrator (run only when the admins table is empty)
+POST {{baseUrl}}/api/auth/bootstrap-admin
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "admin@cput.ac.za",
+  "password": "{{adminPassword}}",
+  "firstName": "PulseUp",
+  "lastName": "Administrator",
+  "phoneNumber": "+27 21 440 1000",
+  "adminNumber": "ADM-2026-001",
+  "department": "Campus Health Services"
+}
+
+> {% client.global.set("adminToken", response.body.token); %}
+
+### 2. Sign in as the existing administrator (use this instead of step 1 after bootstrap)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "admin@cput.ac.za",
+  "password": "{{adminPassword}}"
+}
+
+> {% client.global.set("adminToken", response.body.token); %}
+
+### 3. Register General Consultations staff
+POST {{baseUrl}}/api/auth/register/staff
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "email": "amanda.naidoo@cput.ac.za",
+  "password": "{{staffPassword}}",
+  "firstName": "Amanda",
+  "lastName": "Naidoo",
+  "phoneNumber": "+27 21 440 1101",
+  "staffNumber": "STF-2026-001",
+  "department": "General Consultations",
+  "position": "General Practitioner",
+  "specialization": "Primary health care"
+}
+
+> {% client.global.set("generalConsultationsStaffId", response.body.userId); %}
+
+### 4. Register Reproductive Health staff
+POST {{baseUrl}}/api/auth/register/staff
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "email": "lerato.mokoena@cput.ac.za",
+  "password": "{{staffPassword}}",
+  "firstName": "Lerato",
+  "lastName": "Mokoena",
+  "phoneNumber": "+27 21 440 1102",
+  "staffNumber": "STF-2026-002",
+  "department": "Reproductive Health",
+  "position": "Reproductive Health Nurse",
+  "specialization": "Sexual and reproductive health"
+}
+
+> {% client.global.set("reproductiveHealthStaffId", response.body.userId); %}
+
+### 5. Register HIV VCT staff
+POST {{baseUrl}}/api/auth/register/staff
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "email": "siyabonga.dlamini@cput.ac.za",
+  "password": "{{staffPassword}}",
+  "firstName": "Siyabonga",
+  "lastName": "Dlamini",
+  "phoneNumber": "+27 21 440 1103",
+  "staffNumber": "STF-2026-003",
+  "department": "HIV VCT",
+  "position": "HIV Counsellor",
+  "specialization": "HIV counselling and testing"
+}
+
+> {% client.global.set("hivVctStaffId", response.body.userId); %}
+
+### 6. Register TB DOTS staff
+POST {{baseUrl}}/api/auth/register/staff
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "email": "nomsa.khumalo@cput.ac.za",
+  "password": "{{staffPassword}}",
+  "firstName": "Nomsa",
+  "lastName": "Khumalo",
+  "phoneNumber": "+27 21 440 1104",
+  "staffNumber": "STF-2026-004",
+  "department": "TB DOTS",
+  "position": "TB Nurse",
+  "specialization": "Tuberculosis treatment and adherence"
+}
+
+> {% client.global.set("tbDotsStaffId", response.body.userId); %}
+
+### 7. Register Wound Dressings staff
+POST {{baseUrl}}/api/auth/register/staff
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "email": "jordan.williams@cput.ac.za",
+  "password": "{{staffPassword}}",
+  "firstName": "Jordan",
+  "lastName": "Williams",
+  "phoneNumber": "+27 21 440 1105",
+  "staffNumber": "STF-2026-005",
+  "department": "Wound Dressings",
+  "position": "Wound Care Nurse",
+  "specialization": "Acute and chronic wound care"
+}
+
+> {% client.global.set("woundDressingsStaffId", response.body.userId); %}
+
+### 8. Create General Consultations slot
+POST {{baseUrl}}/api/time-slots
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "staffId": {{generalConsultationsStaffId}},
+  "slotDate": "2026-07-23",
+  "startTime": "09:00",
+  "endTime": "09:20",
+  "appointmentType": "General Consultations",
+  "roomNumber": "Unit A1",
+  "estimatedDurationMinutes": 20
+}
+
+### 9. Create Reproductive Health slot
+POST {{baseUrl}}/api/time-slots
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "staffId": {{reproductiveHealthStaffId}},
+  "slotDate": "2026-07-23",
+  "startTime": "09:00",
+  "endTime": "09:30",
+  "appointmentType": "Reproductive Health",
+  "roomNumber": "Unit B1",
+  "estimatedDurationMinutes": 30
+}
+
+### 10. Create HIV VCT slot
+POST {{baseUrl}}/api/time-slots
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "staffId": {{hivVctStaffId}},
+  "slotDate": "2026-07-23",
+  "startTime": "10:00",
+  "endTime": "10:30",
+  "appointmentType": "HIV VCT",
+  "roomNumber": "Unit C1",
+  "estimatedDurationMinutes": 30
+}
+
+### 11. Create TB DOTS slot
+POST {{baseUrl}}/api/time-slots
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "staffId": {{tbDotsStaffId}},
+  "slotDate": "2026-07-23",
+  "startTime": "11:00",
+  "endTime": "11:15",
+  "appointmentType": "TB DOTS",
+  "roomNumber": "Unit D1",
+  "estimatedDurationMinutes": 15
+}
+
+### 12. Create Wound Dressings slot
+POST {{baseUrl}}/api/time-slots
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "staffId": {{woundDressingsStaffId}},
+  "slotDate": "2026-07-23",
+  "startTime": "12:00",
+  "endTime": "12:30",
+  "appointmentType": "Wound Dressings",
+  "roomNumber": "Unit E1",
+  "estimatedDurationMinutes": 30
+}
+
+### 13. Verify seeded administrators
+GET {{baseUrl}}/api/admins
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+### 14. Verify seeded staff
+GET {{baseUrl}}/api/staff
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+### 15. Verify seeded time slots
+GET {{baseUrl}}/api/time-slots
+Accept: application/json
+Authorization: Bearer {{adminToken}}

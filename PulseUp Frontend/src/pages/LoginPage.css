@@ -1,0 +1,897 @@
+:root {
+    --login-blue: #0876bd;
+    --login-blue-dark: #064a7e;
+    --login-blue-soft: #eaf6fd;
+    --login-orange: #f47a2a;
+    --login-text: #132c3d;
+    --login-text-soft: #667985;
+    --login-border: #d8e4eb;
+    --login-background: #f3f8fb;
+    --login-white: #ffffff;
+    --login-danger: #bd3535;
+    --login-danger-background: #fff0f0;
+    --login-shadow: 0 28px 75px rgba(18, 59, 84, 0.16);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+.pulse-login-page {
+    position: relative;
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+    overflow: hidden;
+    padding: 40px;
+    color: var(--login-text);
+    background:
+            radial-gradient(
+                    circle at 12% 10%,
+                    rgba(8, 118, 189, 0.13),
+                    transparent 30%
+            ),
+            radial-gradient(
+                    circle at 91% 87%,
+                    rgba(244, 122, 42, 0.12),
+                    transparent 26%
+            ),
+            linear-gradient(
+                    135deg,
+                    #f8fbfd 0%,
+                    var(--login-background) 100%
+            );
+}
+
+.pulse-login-page button,
+.pulse-login-page input {
+    font: inherit;
+}
+
+.pulse-login-pattern {
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    border: 1px solid rgba(8, 118, 189, 0.08);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.pulse-login-pattern::before,
+.pulse-login-pattern::after {
+    position: absolute;
+    border: 1px solid rgba(8, 118, 189, 0.08);
+    border-radius: 50%;
+    content: "";
+}
+
+.pulse-login-pattern::before {
+    inset: 46px;
+}
+
+.pulse-login-pattern::after {
+    inset: 96px;
+}
+
+.pulse-login-pattern-left {
+    top: -210px;
+    left: -160px;
+}
+
+.pulse-login-pattern-right {
+    right: -190px;
+    bottom: -220px;
+}
+
+.pulse-login-shell {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(360px, 0.95fr) minmax(420px, 1.05fr);
+    width: min(1120px, 100%);
+    min-height: 690px;
+    overflow: hidden;
+    border: 1px solid rgba(216, 228, 235, 0.9);
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: var(--login-shadow);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.pulse-login-visual {
+    position: relative;
+    min-height: 690px;
+    overflow: hidden;
+    background: var(--login-blue-dark);
+}
+
+.pulse-login-visual > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pulse-login-image-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+            linear-gradient(
+                    180deg,
+                    rgba(4, 43, 72, 0.1) 0%,
+                    rgba(4, 43, 72, 0.32) 48%,
+                    rgba(4, 43, 72, 0.9) 100%
+            ),
+            linear-gradient(
+                    90deg,
+                    rgba(6, 74, 126, 0.12),
+                    transparent 62%
+            );
+}
+
+.pulse-login-visual-pattern {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    width: 122px;
+    height: 122px;
+    opacity: 0.65;
+}
+
+.pulse-login-visual-pattern span {
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
+}
+
+.pulse-login-visual-pattern span:first-child {
+    inset: 0;
+}
+
+.pulse-login-visual-pattern span:last-child {
+    inset: 28px;
+}
+
+.pulse-login-status {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 13px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    color: var(--login-white);
+    background: rgba(7, 45, 71, 0.4);
+    font-size: 0.72rem;
+    font-weight: 800;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.pulse-login-status > span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #62e29f;
+    box-shadow: 0 0 0 5px rgba(98, 226, 159, 0.14);
+}
+
+.pulse-login-visual-card {
+    position: absolute;
+    right: 34px;
+    bottom: 34px;
+    left: 34px;
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 22px;
+    color: var(--login-white);
+    background: rgba(5, 45, 73, 0.64);
+    box-shadow: 0 20px 45px rgba(3, 35, 58, 0.28);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.pulse-login-visual-card > p {
+    margin: 0 0 10px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+}
+
+.pulse-login-visual-card h2 {
+    max-width: 450px;
+    margin: 0;
+    color: var(--login-white);
+    font-size: clamp(1.65rem, 3vw, 2.35rem);
+    line-height: 1.15;
+    letter-spacing: -0.045em;
+}
+
+.pulse-login-benefits {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    gap: 10px;
+}
+
+.pulse-login-benefits > span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 11px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.86);
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.pulse-login-benefits i {
+    display: grid;
+    width: 18px;
+    height: 18px;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(98, 226, 159, 0.18);
+}
+
+.pulse-login-benefits svg {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: #78efb3;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.pulse-login-form-panel {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    background:
+            radial-gradient(
+                    circle at top right,
+                    rgba(8, 118, 189, 0.06),
+                    transparent 30%
+            ),
+            var(--login-white);
+}
+
+.pulse-login-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 26px 34px;
+    border-bottom: 1px solid #edf2f5;
+}
+
+.pulse-login-logo {
+    color: var(--login-blue-dark);
+    font-size: 1.45rem;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    text-decoration: none;
+}
+
+.pulse-login-logo span {
+    color: var(--login-orange);
+}
+
+.pulse-login-home {
+    color: var(--login-text-soft);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.pulse-login-home:hover {
+    color: var(--login-blue);
+}
+
+.pulse-login-content {
+    display: flex;
+    width: min(100%, 510px);
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 48px 48px 56px;
+}
+
+.pulse-login-heading {
+    margin-bottom: 30px;
+}
+
+.pulse-login-heading > p {
+    margin: 0 0 9px;
+    color: var(--login-blue);
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+}
+
+.pulse-login-heading h1 {
+    margin: 0;
+    color: var(--login-text);
+    font-size: clamp(2.1rem, 4vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.055em;
+}
+
+.pulse-login-heading > span {
+    display: block;
+    max-width: 420px;
+    margin-top: 13px;
+    color: var(--login-text-soft);
+    font-size: 0.92rem;
+    line-height: 1.65;
+}
+
+.pulse-login-form {
+    display: grid;
+    gap: 18px;
+}
+
+.pulse-login-field {
+    display: grid;
+    gap: 8px;
+}
+
+.pulse-login-field > span {
+    color: var(--login-text);
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+
+.pulse-login-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.pulse-login-input-wrapper > i {
+    position: absolute;
+    left: 14px;
+    z-index: 1;
+    display: grid;
+    width: 20px;
+    height: 20px;
+    place-items: center;
+    color: #8194a1;
+    pointer-events: none;
+}
+
+.pulse-login-input-wrapper > i svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.pulse-login-input-wrapper input {
+    width: 100%;
+    min-height: 52px;
+    padding: 13px 48px 13px 45px;
+    border: 1px solid var(--login-border);
+    border-radius: 13px;
+    outline: none;
+    color: var(--login-text);
+    background: #fbfdfe;
+    font-size: 0.88rem;
+    transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+}
+
+.pulse-login-input-wrapper input::placeholder {
+    color: #98a7b1;
+}
+
+.pulse-login-input-wrapper input:focus {
+    border-color: var(--login-blue);
+    background: var(--login-white);
+    box-shadow: 0 0 0 4px rgba(8, 118, 189, 0.11);
+}
+
+.pulse-login-input-wrapper input:disabled {
+    color: #8a98a1;
+    background: #eef3f6;
+    cursor: not-allowed;
+}
+
+.pulse-login-password-toggle {
+    position: absolute;
+    right: 10px;
+    display: grid;
+    width: 35px;
+    height: 35px;
+    place-items: center;
+    border: 0;
+    border-radius: 9px;
+    color: #7d909d;
+    background: transparent;
+    cursor: pointer;
+    transition:
+            color 0.2s ease,
+            background 0.2s ease;
+}
+
+.pulse-login-password-toggle:hover:not(:disabled) {
+    color: var(--login-blue);
+    background: var(--login-blue-soft);
+}
+
+.pulse-login-password-toggle:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.pulse-login-password-toggle svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.pulse-login-message {
+    margin: 0;
+    padding: 13px 14px;
+    border: 1px solid #edc5c5;
+    border-radius: 11px;
+    color: var(--login-danger);
+    background: var(--login-danger-background);
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.pulse-login-submit {
+    min-height: 52px;
+    margin-top: 3px;
+    padding: 13px 20px;
+    border: 0;
+    border-radius: 13px;
+    color: var(--login-white);
+    background: linear-gradient(
+            135deg,
+            var(--login-blue),
+            var(--login-blue-dark)
+    );
+    box-shadow: 0 12px 25px rgba(8, 118, 189, 0.23);
+    font-size: 0.86rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            opacity 0.2s ease;
+}
+
+.pulse-login-submit:hover:not(:disabled) {
+    box-shadow: 0 15px 30px rgba(8, 118, 189, 0.3);
+    transform: translateY(-1px);
+}
+
+.pulse-login-submit:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.pulse-login-divider {
+    display: flex;
+    align-items: center;
+    margin: 28px 0 18px;
+    gap: 14px;
+}
+
+.pulse-login-divider::before,
+.pulse-login-divider::after {
+    flex: 1;
+    height: 1px;
+    background: #e4ebef;
+    content: "";
+}
+
+.pulse-login-divider span {
+    color: #8998a1;
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.pulse-login-register {
+    display: grid;
+    min-height: 50px;
+    place-items: center;
+    padding: 12px 18px;
+    border: 1px solid #bfd9e8;
+    border-radius: 13px;
+    color: var(--login-blue-dark);
+    background: var(--login-blue-soft);
+    font-size: 0.84rem;
+    font-weight: 900;
+    text-align: center;
+    text-decoration: none;
+    transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease;
+}
+
+.pulse-login-register:hover {
+    color: var(--login-white);
+    border-color: var(--login-blue);
+    background: var(--login-blue);
+    transform: translateY(-1px);
+}
+
+.pulse-login-support {
+    margin: 17px 0 0;
+    color: #8998a1;
+    font-size: 0.72rem;
+    line-height: 1.55;
+    text-align: center;
+}
+
+@media (max-width: 980px) {
+    .pulse-login-page {
+        padding: 28px;
+    }
+
+    .pulse-login-shell {
+        grid-template-columns: minmax(300px, 0.85fr) minmax(390px, 1.15fr);
+    }
+
+    .pulse-login-visual-card {
+        right: 24px;
+        bottom: 24px;
+        left: 24px;
+        padding: 23px;
+    }
+
+    .pulse-login-content {
+        padding-inline: 38px;
+    }
+}
+
+@media (max-width: 820px) {
+    .pulse-login-page {
+        display: block;
+        padding: 0;
+        background: var(--login-white);
+    }
+
+    .pulse-login-pattern {
+        display: none;
+    }
+
+    .pulse-login-shell {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+        flex-direction: column;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .pulse-login-visual {
+        min-height: 320px;
+    }
+
+    .pulse-login-visual-card {
+        right: 20px;
+        bottom: 20px;
+        left: 20px;
+        padding: 20px;
+    }
+
+    .pulse-login-visual-card h2 {
+        max-width: 560px;
+        font-size: 1.75rem;
+    }
+
+    .pulse-login-status {
+        top: 20px;
+        left: 20px;
+    }
+
+    .pulse-login-form-panel {
+        min-height: 620px;
+    }
+
+    .pulse-login-content {
+        width: min(100%, 600px);
+        padding: 46px 32px 58px;
+    }
+}
+
+@media (max-width: 560px) {
+    .pulse-login-visual {
+        min-height: 270px;
+    }
+
+    .pulse-login-status {
+        top: 16px;
+        left: 16px;
+        font-size: 0.65rem;
+    }
+
+    .pulse-login-visual-pattern {
+        top: 16px;
+        right: 16px;
+        width: 90px;
+        height: 90px;
+    }
+
+    .pulse-login-visual-card {
+        right: 14px;
+        bottom: 14px;
+        left: 14px;
+        padding: 17px;
+        border-radius: 17px;
+    }
+
+    .pulse-login-visual-card > p {
+        margin-bottom: 7px;
+        font-size: 0.62rem;
+    }
+
+    .pulse-login-visual-card h2 {
+        font-size: 1.38rem;
+    }
+
+    .pulse-login-benefits {
+        margin-top: 15px;
+        gap: 7px;
+    }
+
+    .pulse-login-benefits > span {
+        padding: 7px 9px;
+        font-size: 0.63rem;
+    }
+
+    .pulse-login-header {
+        padding: 21px 20px;
+    }
+
+    .pulse-login-logo {
+        font-size: 1.3rem;
+    }
+
+    .pulse-login-home {
+        font-size: 0.72rem;
+    }
+
+    .pulse-login-content {
+        justify-content: flex-start;
+        padding: 38px 20px 48px;
+    }
+
+    .pulse-login-heading {
+        margin-bottom: 25px;
+    }
+
+    .pulse-login-heading h1 {
+        font-size: 2.15rem;
+    }
+
+    .pulse-login-heading > span {
+        font-size: 0.85rem;
+    }
+
+    .pulse-login-input-wrapper input,
+    .pulse-login-submit {
+        min-height: 50px;
+    }
+}
+
+@media (max-width: 380px) {
+    .pulse-login-visual {
+        min-height: 245px;
+    }
+
+    .pulse-login-benefits > span:last-child {
+        display: none;
+    }
+
+    .pulse-login-visual-card h2 {
+        font-size: 1.25rem;
+    }
+
+    .pulse-login-header {
+        padding-inline: 16px;
+    }
+
+    .pulse-login-content {
+        padding-inline: 16px;
+    }
+}
+
+/* Compact, viewport-safe authentication layout */
+.pulse-login-page {
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.pulse-login-shell {
+    grid-template-columns: minmax(300px, 0.9fr) minmax(360px, 1.1fr);
+    width: min(960px, 100%);
+    min-height: 570px;
+}
+
+.pulse-login-visual {
+    min-height: 570px;
+}
+
+.pulse-login-visual-card {
+    right: 24px;
+    bottom: 24px;
+    left: 24px;
+    padding: 22px;
+}
+
+.pulse-login-content {
+    width: min(100%, 430px);
+    padding: 32px 34px 38px;
+}
+
+.pulse-login-heading {
+    margin-bottom: 24px;
+}
+
+.pulse-login-heading h1 {
+    font-size: clamp(1.9rem, 3.6vw, 2.5rem);
+}
+
+.pulse-login-heading > span {
+    margin-top: 10px;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+
+.pulse-login-form {
+    gap: 14px;
+}
+
+.pulse-login-input-wrapper input,
+.pulse-login-submit {
+    min-height: 48px;
+}
+
+.pulse-login-divider {
+    margin: 22px 0 15px;
+}
+
+.pulse-login-register {
+    min-height: 46px;
+}
+
+.pulse-login-support {
+    margin-top: 13px;
+}
+
+@media (max-width: 980px) {
+    .pulse-login-page {
+        padding: 20px;
+    }
+
+    .pulse-login-shell {
+        grid-template-columns: minmax(280px, 0.85fr) minmax(350px, 1.15fr);
+    }
+
+    .pulse-login-content {
+        padding-inline: 28px;
+    }
+}
+
+@media (max-width: 820px) {
+    .pulse-login-page {
+        padding: 0;
+    }
+
+    .pulse-login-shell {
+        min-height: 100dvh;
+    }
+
+    .pulse-login-visual {
+        min-height: 280px;
+    }
+
+    .pulse-login-form-panel {
+        min-height: 0;
+    }
+
+    .pulse-login-content {
+        width: min(100%, 520px);
+        justify-content: flex-start;
+        padding: 32px 28px 44px;
+    }
+}
+
+@media (max-width: 560px) {
+    .pulse-login-visual {
+        min-height: 225px;
+    }
+
+    .pulse-login-visual-card {
+        right: 12px;
+        bottom: 12px;
+        left: 12px;
+        padding: 15px;
+    }
+
+    .pulse-login-benefits {
+        margin-top: 12px;
+    }
+
+    .pulse-login-content {
+        padding: 28px 18px 40px;
+    }
+
+    .pulse-login-heading {
+        margin-bottom: 22px;
+    }
+
+    .pulse-login-heading h1 {
+        font-size: 1.95rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .pulse-login-visual {
+        min-height: 205px;
+    }
+
+    .pulse-login-visual-card h2 {
+        font-size: 1.12rem;
+    }
+
+    .pulse-login-content {
+        padding-inline: 14px;
+    }
+}
+
+@media (min-width: 821px) and (max-height: 700px) {
+    .pulse-login-page {
+        align-items: start;
+        padding: 16px;
+    }
+
+    .pulse-login-shell,
+    .pulse-login-visual {
+        min-height: 540px;
+    }
+
+    .pulse-login-content {
+        padding-block: 24px 28px;
+    }
+
+    .pulse-login-heading {
+        margin-bottom: 18px;
+    }
+
+    .pulse-login-divider {
+        margin-block: 17px 13px;
+    }
+}

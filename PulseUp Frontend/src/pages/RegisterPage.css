@@ -1,0 +1,894 @@
+:root {
+    --register-blue: #0876bd;
+    --register-blue-dark: #064a7e;
+    --register-blue-soft: #eaf6fd;
+    --register-orange: #f47a2a;
+    --register-orange-soft: #fff1e7;
+    --register-green: #16885b;
+    --register-text: #132c3d;
+    --register-text-soft: #667985;
+    --register-border: #d8e4eb;
+    --register-background: #f3f8fb;
+    --register-white: #ffffff;
+    --register-danger: #bd3535;
+    --register-danger-background: #fff0f0;
+    --register-shadow: 0 28px 75px rgba(18, 59, 84, 0.16);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+.pulse-register-page {
+    position: relative;
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+    overflow: hidden;
+    padding: 40px;
+    color: var(--register-text);
+    background:
+            radial-gradient(
+                    circle at 10% 8%,
+                    rgba(8, 118, 189, 0.14),
+                    transparent 30%
+            ),
+            radial-gradient(
+                    circle at 91% 89%,
+                    rgba(244, 122, 42, 0.12),
+                    transparent 27%
+            ),
+            linear-gradient(
+                    135deg,
+                    #f8fbfd 0%,
+                    var(--register-background) 100%
+            );
+}
+
+.pulse-register-page button,
+.pulse-register-page input,
+.pulse-register-page select {
+    font: inherit;
+}
+
+.pulse-register-pattern {
+    position: absolute;
+    width: 430px;
+    height: 430px;
+    border: 1px solid rgba(8, 118, 189, 0.08);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.pulse-register-pattern::before,
+.pulse-register-pattern::after {
+    position: absolute;
+    border: 1px solid rgba(8, 118, 189, 0.08);
+    border-radius: 50%;
+    content: "";
+}
+
+.pulse-register-pattern::before {
+    inset: 48px;
+}
+
+.pulse-register-pattern::after {
+    inset: 100px;
+}
+
+.pulse-register-pattern-left {
+    top: -220px;
+    left: -170px;
+}
+
+.pulse-register-pattern-right {
+    right: -200px;
+    bottom: -220px;
+}
+
+.pulse-register-shell {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(370px, 0.92fr) minmax(520px, 1.08fr);
+    width: min(1240px, 100%);
+    min-height: 760px;
+    max-height: calc(100vh - 80px);
+    overflow: hidden;
+    border: 1px solid rgba(216, 228, 235, 0.9);
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: var(--register-shadow);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.pulse-register-visual {
+    position: relative;
+    min-height: 760px;
+    overflow: hidden;
+    background: var(--register-blue-dark);
+}
+
+.pulse-register-visual > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pulse-register-image-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+            linear-gradient(
+                    180deg,
+                    rgba(4, 43, 72, 0.17) 0%,
+                    rgba(4, 43, 72, 0.35) 45%,
+                    rgba(4, 43, 72, 0.94) 100%
+            ),
+            linear-gradient(
+                    90deg,
+                    rgba(6, 74, 126, 0.13),
+                    transparent 64%
+            );
+}
+
+.pulse-register-visual-pattern {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    width: 122px;
+    height: 122px;
+    opacity: 0.65;
+}
+
+.pulse-register-visual-pattern span {
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    border-radius: 50%;
+}
+
+.pulse-register-visual-pattern span:first-child {
+    inset: 0;
+}
+
+.pulse-register-visual-pattern span:last-child {
+    inset: 28px;
+}
+
+.pulse-register-visual-heading {
+    position: absolute;
+    top: 34px;
+    left: 34px;
+    z-index: 1;
+    max-width: 360px;
+}
+
+.pulse-register-visual-heading p {
+    margin: 0 0 10px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+}
+
+.pulse-register-visual-heading h2 {
+    margin: 0;
+    color: var(--register-white);
+    font-size: clamp(1.8rem, 3vw, 2.65rem);
+    line-height: 1.12;
+    letter-spacing: -0.045em;
+}
+
+.pulse-register-dashboard {
+    position: absolute;
+    right: 32px;
+    bottom: 32px;
+    left: 32px;
+    z-index: 1;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 22px;
+    color: var(--register-white);
+    background: rgba(5, 45, 73, 0.66);
+    box-shadow: 0 20px 45px rgba(3, 35, 58, 0.28);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.pulse-register-dashboard header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pulse-register-dashboard-icon {
+    display: grid;
+    width: 45px;
+    height: 45px;
+    flex: none;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.pulse-register-dashboard-icon svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: var(--register-white);
+    stroke-width: 1.7;
+}
+
+.pulse-register-dashboard header > div {
+    min-width: 0;
+    flex: 1;
+}
+
+.pulse-register-dashboard header small,
+.pulse-register-dashboard header strong {
+    display: block;
+}
+
+.pulse-register-dashboard header small {
+    margin-bottom: 4px;
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+}
+
+.pulse-register-dashboard header strong {
+    overflow: hidden;
+    color: var(--register-white);
+    font-size: 0.94rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pulse-register-live {
+    flex: none;
+    padding: 7px 10px;
+    border: 1px solid rgba(98, 226, 159, 0.27);
+    border-radius: 999px;
+    color: #7ff1ba;
+    background: rgba(98, 226, 159, 0.13);
+    font-size: 0.61rem;
+    font-weight: 900;
+    letter-spacing: 0.09em;
+}
+
+.pulse-register-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.pulse-register-dashboard-grid article {
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.pulse-register-dashboard-grid span,
+.pulse-register-dashboard-grid strong {
+    display: block;
+}
+
+.pulse-register-dashboard-grid span {
+    margin-bottom: 7px;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.63rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+.pulse-register-dashboard-grid strong {
+    color: var(--register-white);
+    font-size: 0.78rem;
+    line-height: 1.45;
+}
+
+.pulse-register-dashboard ul {
+    display: grid;
+    margin: 18px 0 0;
+    padding: 0;
+    gap: 9px;
+    list-style: none;
+}
+
+.pulse-register-dashboard li {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 0.76rem;
+    line-height: 1.4;
+}
+
+.pulse-register-dashboard li i {
+    display: grid;
+    width: 19px;
+    height: 19px;
+    flex: none;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(98, 226, 159, 0.16);
+}
+
+.pulse-register-dashboard li svg {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: #7ff1ba;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.pulse-register-form-panel {
+    display: flex;
+    min-width: 0;
+    max-height: calc(100vh - 80px);
+    flex-direction: column;
+    overflow: hidden;
+    background:
+            radial-gradient(
+                    circle at top right,
+                    rgba(8, 118, 189, 0.06),
+                    transparent 30%
+            ),
+            var(--register-white);
+}
+
+.pulse-register-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: none;
+    padding: 24px 34px;
+    border-bottom: 1px solid #edf2f5;
+}
+
+.pulse-register-logo {
+    color: var(--register-blue-dark);
+    font-size: 1.45rem;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    text-decoration: none;
+}
+
+.pulse-register-logo span {
+    color: var(--register-orange);
+}
+
+.pulse-register-home {
+    color: var(--register-text-soft);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.pulse-register-home:hover {
+    color: var(--register-blue);
+}
+
+.pulse-register-content {
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    padding: 38px 42px 48px;
+    scrollbar-width: thin;
+    scrollbar-color: #b9ccd8 transparent;
+}
+
+.pulse-register-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.pulse-register-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.pulse-register-content::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: #b9ccd8;
+    background-clip: padding-box;
+}
+
+.pulse-register-heading {
+    margin-bottom: 27px;
+}
+
+.pulse-register-heading > p {
+    margin: 0 0 9px;
+    color: var(--register-blue);
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+}
+
+.pulse-register-heading h1 {
+    margin: 0;
+    color: var(--register-text);
+    font-size: clamp(2rem, 4vw, 2.85rem);
+    line-height: 1.06;
+    letter-spacing: -0.055em;
+}
+
+.pulse-register-heading > span {
+    display: block;
+    max-width: 520px;
+    margin-top: 12px;
+    color: var(--register-text-soft);
+    font-size: 0.9rem;
+    line-height: 1.65;
+}
+
+.pulse-register-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px 16px;
+}
+
+.pulse-register-field {
+    display: grid;
+    gap: 8px;
+}
+
+.pulse-register-field > span {
+    color: var(--register-text);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.pulse-register-field input,
+.pulse-register-field select {
+    width: 100%;
+    min-height: 49px;
+    padding: 12px 13px;
+    border: 1px solid var(--register-border);
+    border-radius: 12px;
+    outline: none;
+    color: var(--register-text);
+    background: #fbfdfe;
+    font-size: 0.84rem;
+    transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+}
+
+.pulse-register-field input::placeholder {
+    color: #9aa9b2;
+}
+
+.pulse-register-field input:focus,
+.pulse-register-field select:focus {
+    border-color: var(--register-blue);
+    background: var(--register-white);
+    box-shadow: 0 0 0 4px rgba(8, 118, 189, 0.11);
+}
+
+.pulse-register-field input:disabled,
+.pulse-register-field select:disabled {
+    color: #8b989f;
+    background: #eef3f6;
+    cursor: not-allowed;
+}
+
+.pulse-register-field select {
+    cursor: pointer;
+}
+
+.pulse-register-message {
+    grid-column: 1 / -1;
+    margin: 2px 0 0;
+    padding: 13px 14px;
+    border: 1px solid #edc5c5;
+    border-radius: 11px;
+    color: var(--register-danger);
+    background: var(--register-danger-background);
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.pulse-register-submit {
+    grid-column: 1 / -1;
+    min-height: 52px;
+    margin-top: 4px;
+    padding: 13px 20px;
+    border: 0;
+    border-radius: 13px;
+    color: var(--register-white);
+    background: linear-gradient(
+            135deg,
+            var(--register-blue),
+            var(--register-blue-dark)
+    );
+    box-shadow: 0 12px 25px rgba(8, 118, 189, 0.23);
+    font-size: 0.86rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            opacity 0.2s ease;
+}
+
+.pulse-register-submit:hover:not(:disabled) {
+    box-shadow: 0 15px 30px rgba(8, 118, 189, 0.3);
+    transform: translateY(-1px);
+}
+
+.pulse-register-submit:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.pulse-register-footer {
+    margin: 23px 0 0;
+    color: var(--register-text-soft);
+    font-size: 0.78rem;
+    text-align: center;
+}
+
+.pulse-register-footer a {
+    color: var(--register-blue);
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.pulse-register-footer a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 1100px) {
+    .pulse-register-page {
+        padding: 28px;
+    }
+
+    .pulse-register-shell {
+        grid-template-columns: minmax(320px, 0.82fr) minmax(500px, 1.18fr);
+        max-height: calc(100vh - 56px);
+    }
+
+    .pulse-register-form-panel {
+        max-height: calc(100vh - 56px);
+    }
+
+    .pulse-register-visual-heading {
+        top: 28px;
+        left: 28px;
+    }
+
+    .pulse-register-dashboard {
+        right: 24px;
+        bottom: 24px;
+        left: 24px;
+    }
+
+    .pulse-register-content {
+        padding-inline: 34px;
+    }
+}
+
+@media (max-width: 900px) {
+    .pulse-register-page {
+        display: block;
+        padding: 0;
+        overflow: visible;
+        background: var(--register-white);
+    }
+
+    .pulse-register-pattern {
+        display: none;
+    }
+
+    .pulse-register-shell {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+        max-height: none;
+        flex-direction: column;
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .pulse-register-visual {
+        min-height: 430px;
+    }
+
+    .pulse-register-form-panel {
+        max-height: none;
+        overflow: visible;
+    }
+
+    .pulse-register-content {
+        width: min(100%, 760px);
+        margin: 0 auto;
+        overflow: visible;
+        padding: 45px 34px 58px;
+    }
+
+    .pulse-register-dashboard {
+        max-width: 620px;
+    }
+}
+
+@media (max-width: 650px) {
+    .pulse-register-visual {
+        min-height: 390px;
+    }
+
+    .pulse-register-visual-heading {
+        top: 20px;
+        right: 20px;
+        left: 20px;
+    }
+
+    .pulse-register-visual-heading h2 {
+        max-width: 450px;
+        font-size: 1.75rem;
+    }
+
+    .pulse-register-visual-pattern {
+        display: none;
+    }
+
+    .pulse-register-dashboard {
+        right: 16px;
+        bottom: 16px;
+        left: 16px;
+        padding: 19px;
+        border-radius: 17px;
+    }
+
+    .pulse-register-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pulse-register-dashboard ul {
+        display: none;
+    }
+
+    .pulse-register-header {
+        padding: 21px 20px;
+    }
+
+    .pulse-register-logo {
+        font-size: 1.3rem;
+    }
+
+    .pulse-register-home {
+        font-size: 0.72rem;
+    }
+
+    .pulse-register-content {
+        padding: 38px 20px 48px;
+    }
+
+    .pulse-register-heading h1 {
+        font-size: 2.1rem;
+    }
+
+    .pulse-register-form {
+        grid-template-columns: 1fr;
+    }
+
+    .pulse-register-message,
+    .pulse-register-submit {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 400px) {
+    .pulse-register-visual {
+        min-height: 360px;
+    }
+
+    .pulse-register-visual-heading h2 {
+        font-size: 1.5rem;
+    }
+
+    .pulse-register-dashboard {
+        padding: 16px;
+    }
+
+    .pulse-register-dashboard header strong {
+        font-size: 0.82rem;
+    }
+
+    .pulse-register-live {
+        padding: 6px 8px;
+    }
+
+    .pulse-register-dashboard-grid {
+        margin-top: 14px;
+    }
+
+    .pulse-register-content {
+        padding-inline: 16px;
+    }
+
+    .pulse-register-header {
+        padding-inline: 16px;
+    }
+}
+
+/* Compact, viewport-safe registration layout */
+.pulse-register-page {
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.pulse-register-shell {
+    grid-template-columns: minmax(320px, 0.82fr) minmax(500px, 1.18fr);
+    width: min(1060px, 100%);
+    height: min(700px, calc(100dvh - 48px));
+    min-height: 560px;
+    max-height: none;
+}
+
+.pulse-register-visual {
+    min-height: 0;
+}
+
+.pulse-register-form-panel {
+    height: 100%;
+    max-height: none;
+}
+
+.pulse-register-content {
+    padding: 26px 30px 32px;
+}
+
+.pulse-register-heading {
+    margin-bottom: 20px;
+}
+
+.pulse-register-heading h1 {
+    font-size: clamp(1.85rem, 3.5vw, 2.45rem);
+}
+
+.pulse-register-heading > span {
+    margin-top: 9px;
+    font-size: 0.84rem;
+    line-height: 1.5;
+}
+
+.pulse-register-form {
+    gap: 12px 13px;
+}
+
+.pulse-register-field {
+    gap: 6px;
+}
+
+.pulse-register-field input,
+.pulse-register-field select {
+    min-height: 44px;
+    padding: 10px 12px;
+}
+
+.pulse-register-submit {
+    min-height: 46px;
+    margin-top: 2px;
+}
+
+.pulse-register-footer {
+    margin-top: 17px;
+}
+
+@media (max-width: 1100px) {
+    .pulse-register-page {
+        padding: 20px;
+    }
+
+    .pulse-register-shell {
+        grid-template-columns: minmax(300px, 0.8fr) minmax(470px, 1.2fr);
+        height: min(700px, calc(100dvh - 40px));
+    }
+
+    .pulse-register-content {
+        padding-inline: 26px;
+    }
+}
+
+@media (max-width: 900px) {
+    .pulse-register-page {
+        padding: 0;
+    }
+
+    .pulse-register-shell {
+        min-height: 100dvh;
+        height: auto;
+    }
+
+    .pulse-register-visual {
+        min-height: 300px;
+    }
+
+    .pulse-register-form-panel {
+        height: auto;
+    }
+
+    .pulse-register-content {
+        width: min(100%, 700px);
+        padding: 32px 28px 46px;
+    }
+
+    .pulse-register-dashboard {
+        max-width: 560px;
+        padding: 18px;
+    }
+
+    .pulse-register-dashboard ul {
+        display: none;
+    }
+}
+
+@media (max-width: 650px) {
+    .pulse-register-visual {
+        min-height: 245px;
+    }
+
+    .pulse-register-visual-heading {
+        top: 17px;
+        right: 17px;
+        left: 17px;
+    }
+
+    .pulse-register-visual-heading h2 {
+        max-width: 380px;
+        font-size: 1.45rem;
+    }
+
+    .pulse-register-dashboard {
+        right: 12px;
+        bottom: 12px;
+        left: 12px;
+        padding: 14px;
+    }
+
+    .pulse-register-dashboard-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 12px;
+    }
+
+    .pulse-register-content {
+        padding: 28px 18px 40px;
+    }
+
+    .pulse-register-heading h1 {
+        font-size: 1.9rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .pulse-register-visual {
+        min-height: 215px;
+    }
+
+    .pulse-register-dashboard-grid {
+        display: none;
+    }
+
+    .pulse-register-content {
+        padding-inline: 14px;
+    }
+}

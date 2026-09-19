@@ -1,0 +1,9 @@
+# IntelliJ IDEA HTTP Client private environments may contain development credentials and tokens.
+PulseUp2026/http-client.private.env.json
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Maven build output
+PulseUp2026/target/
