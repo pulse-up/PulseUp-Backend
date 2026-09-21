@@ -10,7 +10,7 @@ public class LoggingListener {
             AppointmentCreatedEvent event) {
 
         System.out.println("===== LOGGING LISTENER =====");
-
-        System.out.println("New appointment received: " + event.getAppointment().getCode());
+//Will come back and check if this corresponds with the Appointment domain 
+        System.out.println("New appointment received: " + event.getAppointmentId());
     }
 }
