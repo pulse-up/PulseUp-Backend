@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggingListener {
     @EventListener
-    public void handleCourseCreated(
-            CourseCreatedEvent event) {
+    public void handleAppointmentCreated(
+            AppointmentCreatedEvent event) {
 
         System.out.println("===== LOGGING LISTENER =====");
 
