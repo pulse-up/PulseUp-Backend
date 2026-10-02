@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/api';
+import { clearSession } from '../utils/session';
 import ResponsiveHeader from '../components/ResponsiveHeader';
 
 const SERVICE_CATALOG = [
@@ -43,7 +44,7 @@ function readStoredUser() {
   } catch (error) {
     console.error('Could not read stored staff user:', error);
 
-    localStorage.removeItem('pulseupUser');
+    clearSession();
     return {};
   }
 }
@@ -155,7 +156,7 @@ function StaffDashboard() {
       console.error('Staff dashboard loading failed:', error);
 
       if (error.response?.status === 401 || error.response?.status === 403) {
-        localStorage.removeItem('pulseupUser');
+        clearSession();
 
         navigate('/login', {
           replace: true,
@@ -356,7 +357,7 @@ function StaffDashboard() {
         setActiveTab('completed');
 
         setMessage(
-          'The appointment was completed. The student received 10 health points and any newly reached Cyngatha voucher tier was issued.',
+          'The appointment was marked as attended.',
         );
       }
     } catch (error) {
@@ -379,7 +380,7 @@ function StaffDashboard() {
   }
 
   function handleLogout() {
-    localStorage.removeItem('pulseupUser');
+    clearSession();
 
     navigate('/login', {
       replace: true,
@@ -487,6 +488,7 @@ function StaffDashboard() {
     <main className="student-dashboard staff-dashboard">
       <ResponsiveHeader
         ariaLabel="Staff dashboard navigation"
+        desktopAction={{ label: 'Back to home', to: '/' }}
         identity={{
           name: `${user.firstName || 'Clinic'} ${user.lastName || 'staff'}`.trim(),
           detail: staffProfile.position || 'Clinic staff',
@@ -513,6 +515,8 @@ function StaffDashboard() {
             active: activeTab === 'cancelled',
             onSelect: () => setActiveTab('cancelled'),
           },
+          { label: 'My Profile', to: '/staff/profile' },
+          { label: 'Clinic History', to: '/staff/history' },
         ]}
         onSignOut={handleLogout}
       />

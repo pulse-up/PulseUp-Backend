@@ -1342,3 +1342,30 @@ a {
         border-radius: 14px;
     }
 }
+
+
+/* Admin: live overview, no-show and closed-slot states */
+.appointment-status.no_show {
+  background: #fdecea;
+  color: #8a1c14;
+}
+
+.slot-status.unavailable {
+  background: #eceff3;
+  color: #47505c;
+}
+
+.admin-live-grid {
+  margin-bottom: 0.5rem;
+}
+
+/* Empty states shown where sample data used to be */
+.empty-message,
+.admin-empty,
+.student-notification-empty,
+.admin-notification-empty {
+  margin: 0;
+  padding: 1rem;
+  color: #5b6472;
+  font-size: 0.95rem;
+}

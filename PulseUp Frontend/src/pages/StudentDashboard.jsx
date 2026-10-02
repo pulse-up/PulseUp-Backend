@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import api from '../api/api';
+import { clearSession } from '../utils/session';
 import StudentProfile from '../components/StudentProfile';
 import HealthRewards from '../components/HealthRewards';
 import ResponsiveHeader from '../components/ResponsiveHeader';
@@ -28,7 +29,7 @@ function readStoredUser() {
   } catch (error) {
     console.error('Could not read stored student user:', error);
 
-    localStorage.removeItem('pulseupUser');
+    clearSession();
 
     return {};
   }
@@ -211,7 +212,7 @@ function StudentDashboard() {
       const status = error.response?.status;
 
       if (status === 401 || status === 403) {
-        localStorage.removeItem('pulseupUser');
+        clearSession();
 
         navigate('/login', {
           replace: true,
@@ -300,7 +301,7 @@ function StudentDashboard() {
           const status = error.response?.status;
 
           if (status === 401 || status === 403) {
-            localStorage.removeItem('pulseupUser');
+            clearSession();
 
             navigate('/login', {
               replace: true,
@@ -573,7 +574,7 @@ function StudentDashboard() {
   }
 
   function handleLogout() {
-    localStorage.removeItem('pulseupUser');
+    clearSession();
 
     navigate('/login', {
       replace: true,
@@ -793,6 +794,7 @@ function StudentDashboard() {
     <main className="student-dashboard">
       <ResponsiveHeader
         ariaLabel="Student dashboard navigation"
+        desktopAction={{ label: 'Back to home', to: '/' }}
         identity={{
           name: `${user.firstName || 'Student'} ${user.lastName || ''}`.trim(),
           detail:
@@ -815,6 +817,10 @@ function StudentDashboard() {
             active: dashboardSection === 'profile',
             onSelect: () => setDashboardSection('profile'),
           },
+          { label: 'Health Quests', to: '/student/health-quests' },
+          { label: 'Sick Notes', to: '/student/sick-notes' },
+          { label: 'Medical History', to: '/student/history' },
+          { label: 'Clinic Services', to: '/student/bookings' },
         ]}
         onSignOut={handleLogout}
       />

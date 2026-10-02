@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import api from '../api/api';
-import clinicImage from '../assets/pulseup-login-clinic.png';
+import { USE_BACKEND } from '../constants/appConfig';
+import AuthBackground from '../components/AuthBackground';
 import ResponsiveHeader from '../components/ResponsiveHeader';
 
 import './RegisterPage.css';
@@ -13,15 +14,32 @@ const INITIAL_FORM = {
   email: '',
   phoneNumber: '',
   studentNumber: '',
-  course: '',
   campus: '',
-  residence: '',
-  yearOfStudy: '',
-  emergencyContactName: '',
-  emergencyContactPhone: '',
   password: '',
   confirmPassword: '',
 };
+
+const INITIAL_EMPLOYEE_FORM = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  phoneNumber: '',
+  employeeNumber: '',
+  jobTitle: '',
+  department: '',
+  campus: '',
+  password: '',
+  confirmPassword: '',
+};
+
+const JOB_TITLES = [
+  'Lecturer',
+  'Security guard',
+  'Cleaner',
+  'Administrative staff',
+  'Maintenance worker',
+  'Other',
+];
 
 const CAMPUSES = [
   'District Six Campus',
@@ -30,59 +48,13 @@ const CAMPUSES = [
   'Wellington Campus',
 ];
 
-const RESIDENCES = [
-  'CPUT Student Residence',
-  'Private Student Residence',
-  'Living at Home',
-  'Other',
-];
-
-const YEARS_OF_STUDY = [
-  {
-    value: 'FIRST_YEAR',
-    label: '1st Year',
-  },
-  {
-    value: 'SECOND_YEAR',
-    label: '2nd Year',
-  },
-  {
-    value: 'THIRD_YEAR',
-    label: '3rd Year',
-  },
-  {
-    value: 'FOURTH_YEAR',
-    label: '4th Year',
-  },
-  {
-    value: 'POSTGRADUATE',
-    label: 'Postgraduate',
-  },
-  {
-    value: 'MASTERS',
-    label: 'Masters',
-  },
-  {
-    value: 'PHD',
-    label: 'PhD',
-  },
-];
-
-function CheckIcon() {
+function EyeIcon({ visible }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="m6.5 12.5 3.2 3.2 7.8-8" />
-    </svg>
-  );
-}
+      <path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6Z" />
+      <circle cx="12" cy="12" r="2.5" />
 
-function DashboardIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="3" y="3" width="7" height="7" rx="2" />
-      <rect x="14" y="3" width="7" height="7" rx="2" />
-      <rect x="3" y="14" width="7" height="7" rx="2" />
-      <rect x="14" y="14" width="7" height="7" rx="2" />
+      {visible && <path d="M4 4 20 20" />}
     </svg>
   );
 }
@@ -125,12 +97,23 @@ function getRegistrationError(error) {
   }
 }
 
-function RegisterPage() {
+function RegisterPage({ accountType = 'student' }) {
   const navigate = useNavigate();
 
-  const [form, setForm] = useState(INITIAL_FORM);
+  const isEmployee = accountType === 'employee';
+
+  const [form, setForm] = useState(
+    isEmployee ? INITIAL_EMPLOYEE_FORM : INITIAL_FORM,
+  );
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  // Live check: null until the confirm box has text, then true/false.
+  const passwordsMatch = form.confirmPassword
+    ? form.password === form.confirmPassword
+    : null;
 
   function updateField(event) {
     const { name, value } = event.target;
@@ -154,16 +137,16 @@ function RegisterPage() {
       return 'Enter a valid email address.';
     }
 
-    if (!/^\d{8,12}$/.test(form.studentNumber.trim())) {
+    if (isEmployee) {
+      if (!/^[A-Za-z0-9-]{3,20}$/.test(form.employeeNumber.trim())) {
+        return 'Enter a valid employee number (letters, digits or dashes).';
+      }
+    } else if (!/^\d{8,12}$/.test(form.studentNumber.trim())) {
       return 'The student number must contain 8 to 12 digits.';
     }
 
     if (!/^0\d{9}$/.test(form.phoneNumber.trim())) {
       return 'Enter a valid 10-digit South African phone number.';
-    }
-
-    if (!/^0\d{9}$/.test(form.emergencyContactPhone.trim())) {
-      return 'Enter a valid 10-digit emergency contact number.';
     }
 
     if (form.password.length < 8) {
@@ -191,22 +174,46 @@ function RegisterPage() {
     setIsSubmitting(true);
 
     try {
-      const response = await api.post('/auth/register/student', {
-        firstName: form.firstName.trim(),
-        lastName: form.lastName.trim(),
-        email: form.email.trim().toLowerCase(),
-        phoneNumber: form.phoneNumber.trim(),
-        studentNumber: form.studentNumber.trim(),
-        course: form.course.trim(),
-        campus: form.campus,
-        residence: form.residence,
-        yearOfStudy: form.yearOfStudy,
-        emergencyContactName: form.emergencyContactName.trim(),
-        emergencyContactPhone: form.emergencyContactPhone.trim(),
-        password: form.password,
-      });
+      const response = await api.post(
+        isEmployee ? '/auth/register/employee' : '/auth/register/student',
+        isEmployee
+          ? {
+              firstName: form.firstName.trim(),
+              lastName: form.lastName.trim(),
+              email: form.email.trim().toLowerCase(),
+              phoneNumber: form.phoneNumber.trim(),
+              employeeNumber: form.employeeNumber.trim(),
+              jobTitle: form.jobTitle,
+              department: form.department.trim(),
+              campus: form.campus,
+              password: form.password,
+            }
+          : {
+              firstName: form.firstName.trim(),
+              lastName: form.lastName.trim(),
+              email: form.email.trim().toLowerCase(),
+              phoneNumber: form.phoneNumber.trim(),
+              studentNumber: form.studentNumber.trim(),
+              campus: form.campus,
+              password: form.password,
+            },
+      );
 
       const user = response.data || {};
+
+      // Backend asks for email verification before the account can be used.
+      if (user.emailVerificationRequired) {
+        const pendingEmail = form.email.trim().toLowerCase();
+
+        sessionStorage.setItem('pulseupPendingEmail', pendingEmail);
+
+        navigate('/check-email', {
+          replace: true,
+          state: { email: pendingEmail },
+        });
+
+        return;
+      }
 
       const token = user.token || user.accessToken || user.jwt || '';
 
@@ -216,11 +223,11 @@ function RegisterPage() {
           JSON.stringify({
             ...user,
             token,
-            role: user.role || 'STUDENT',
+            role: user.role || (isEmployee ? 'EMPLOYEE' : 'STUDENT'),
           }),
         );
 
-        navigate('/student/dashboard', {
+        navigate(isEmployee ? '/employee/dashboard' : '/student/dashboard', {
           replace: true,
         });
 
@@ -244,163 +251,161 @@ function RegisterPage() {
   }
 
   return (
-    <main className="pulse-register-page">
-      <div
-        className="pulse-register-pattern pulse-register-pattern-left"
-        aria-hidden="true"
-      />
-
-      <div
-        className="pulse-register-pattern pulse-register-pattern-right"
-        aria-hidden="true"
-      />
+    <main className="pulse-auth-page pulse-register-page">
+      <AuthBackground />
 
       <section
-        className="pulse-register-shell"
-        aria-label="PulseUp student registration"
+        className="pulse-auth-card pulse-register-card"
+        aria-label={
+          isEmployee
+            ? 'PulseUp university staff registration'
+            : 'PulseUp student registration'
+        }
       >
-        <aside className="pulse-register-visual">
-          <img
-            src={clinicImage}
-            alt="Student receiving help from a campus healthcare clinician"
-          />
+        <ResponsiveHeader
+          variant="auth"
+          ariaLabel="Registration page navigation"
+          desktopAction={{ label: 'Back to home', to: '/' }}
+          menuItems={[
+            { label: 'Home', to: '/' },
+            { label: 'Sign in', to: '/login' },
+            {
+              label: 'Create student account',
+              to: '/register',
+              active: !isEmployee,
+            },
+            ...(USE_BACKEND
+              ? []
+              : [
+                  {
+                    label: 'Create university staff account',
+                    to: '/register/staff',
+                    active: isEmployee,
+                  },
+                ]),
+          ]}
+        />
 
-          <div className="pulse-register-image-overlay" aria-hidden="true" />
+        <div className="pulse-register-content">
+          <div className="pulse-register-heading">
+            <p className="pulse-auth-eyebrow">
+              {isEmployee ? 'UNIVERSITY STAFF REGISTRATION' : 'STUDENT REGISTRATION'}
+            </p>
 
-          <div className="pulse-register-visual-pattern" aria-hidden="true">
-            <span />
-            <span />
+            <h1 className="pulse-auth-title">Create your account</h1>
+
+            <span className="pulse-auth-lead">
+              Complete your details to get started.
+            </span>
           </div>
 
-          <div className="pulse-register-visual-heading">
-            <p>YOUR HEALTHCARE DASHBOARD</p>
+          <form className="pulse-register-form" onSubmit={handleSubmit}>
+            <label className="pulse-auth-field">
+              <span>First name</span>
 
-            <h2>One account for your campus healthcare.</h2>
-          </div>
+              <input
+                name="firstName"
+                value={form.firstName}
+                onChange={updateField}
+                autoComplete="given-name"
+                disabled={isSubmitting}
+                required
+              />
+            </label>
 
-          <div className="pulse-register-dashboard">
-            <header>
-              <span className="pulse-register-dashboard-icon">
-                <DashboardIcon />
-              </span>
+            <label className="pulse-auth-field">
+              <span>Last name</span>
 
-              <div>
-                <small>STUDENT DASHBOARD</small>
-                <strong>Healthcare at a glance</strong>
-              </div>
+              <input
+                name="lastName"
+                value={form.lastName}
+                onChange={updateField}
+                autoComplete="family-name"
+                disabled={isSubmitting}
+                required
+              />
+            </label>
 
-              <span className="pulse-register-live">LIVE</span>
-            </header>
+            <label className="pulse-auth-field">
+              <span>Email address</span>
 
-            <div className="pulse-register-dashboard-grid">
-              <article>
-                <span>Next visit</span>
-                <strong>General consultation</strong>
-              </article>
+              <input
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={updateField}
+                autoComplete="email"
+                disabled={isSubmitting}
+                required
+              />
+            </label>
 
-              <article>
-                <span>Digital queue</span>
-                <strong>Live updates enabled</strong>
-              </article>
-            </div>
+            <label className="pulse-auth-field">
+              <span>Phone number</span>
 
-            <ul>
-              <li>
-                <i>
-                  <CheckIcon />
-                </i>
-                Book and manage clinic appointments
-              </li>
+              <input
+                name="phoneNumber"
+                type="tel"
+                value={form.phoneNumber}
+                onChange={updateField}
+                placeholder="0712345678"
+                maxLength={10}
+                disabled={isSubmitting}
+                required
+              />
+            </label>
 
-              <li>
-                <i>
-                  <CheckIcon />
-                </i>
-                View clinician and room information
-              </li>
-            </ul>
-          </div>
-        </aside>
+            {isEmployee ? (
+              <>
+                <label className="pulse-auth-field">
+                  <span>Employee number</span>
 
-        <section className="pulse-register-form-panel">
-          <ResponsiveHeader
-            variant="auth"
-            ariaLabel="Registration page navigation"
-            desktopAction={{ label: 'Back to home', to: '/' }}
-            menuItems={[
-              { label: 'Home', to: '/' },
-              { label: 'Sign in', to: '/login' },
-              { label: 'Create student account', to: '/register', active: true },
-            ]}
-          />
+                  <input
+                    name="employeeNumber"
+                    value={form.employeeNumber}
+                    onChange={updateField}
+                    placeholder="e.g. EMP-1042"
+                    maxLength={20}
+                    disabled={isSubmitting}
+                    required
+                  />
+                </label>
 
-          <div className="pulse-register-content">
-            <div className="pulse-register-heading">
-              <p>STUDENT REGISTRATION</p>
-              <h1>Create your account</h1>
+                <label className="pulse-auth-field">
+                  <span>Job title</span>
 
-              <span>
-                Complete your details to enter the PulseUp healthcare dashboard.
-              </span>
-            </div>
+                  <select
+                    name="jobTitle"
+                    value={form.jobTitle}
+                    onChange={updateField}
+                    disabled={isSubmitting}
+                    required
+                  >
+                    <option value="">Select job title</option>
 
-            <form className="pulse-register-form" onSubmit={handleSubmit}>
-              <label className="pulse-register-field">
-                <span>First name</span>
+                    {JOB_TITLES.map((title) => (
+                      <option value={title} key={title}>
+                        {title}
+                      </option>
+                    ))}
+                  </select>
+                </label>
 
-                <input
-                  name="firstName"
-                  value={form.firstName}
-                  onChange={updateField}
-                  autoComplete="given-name"
-                  disabled={isSubmitting}
-                  required
-                />
-              </label>
+                <label className="pulse-auth-field">
+                  <span>Department</span>
 
-              <label className="pulse-register-field">
-                <span>Last name</span>
-
-                <input
-                  name="lastName"
-                  value={form.lastName}
-                  onChange={updateField}
-                  autoComplete="family-name"
-                  disabled={isSubmitting}
-                  required
-                />
-              </label>
-
-              <label className="pulse-register-field">
-                <span>Email address</span>
-
-                <input
-                  name="email"
-                  type="email"
-                  value={form.email}
-                  onChange={updateField}
-                  autoComplete="email"
-                  disabled={isSubmitting}
-                  required
-                />
-              </label>
-
-              <label className="pulse-register-field">
-                <span>Phone number</span>
-
-                <input
-                  name="phoneNumber"
-                  type="tel"
-                  value={form.phoneNumber}
-                  onChange={updateField}
-                  placeholder="0712345678"
-                  maxLength={10}
-                  disabled={isSubmitting}
-                  required
-                />
-              </label>
-
-              <label className="pulse-register-field">
+                  <input
+                    name="department"
+                    value={form.department}
+                    onChange={updateField}
+                    placeholder="e.g. Security, Facilities"
+                    disabled={isSubmitting}
+                    required
+                  />
+                </label>
+              </>
+            ) : (
+              <label className="pulse-auth-field">
                 <span>Student number</span>
 
                 <input
@@ -413,159 +418,160 @@ function RegisterPage() {
                   required
                 />
               </label>
+            )}
 
-              <label className="pulse-register-field">
-                <span>Course</span>
+            <label className="pulse-auth-field">
+              <span>Campus</span>
 
-                <input
-                  name="course"
-                  value={form.course}
-                  onChange={updateField}
-                  placeholder="Diploma in ICT Applications Development"
-                  disabled={isSubmitting}
-                  required
-                />
-              </label>
+              <select
+                name="campus"
+                value={form.campus}
+                onChange={updateField}
+                disabled={isSubmitting}
+                required
+              >
+                <option value="">Select campus</option>
 
-              <label className="pulse-register-field">
-                <span>Campus</span>
+                {CAMPUSES.map((campus) => (
+                  <option value={campus} key={campus}>
+                    {campus}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-                <select
-                  name="campus"
-                  value={form.campus}
-                  onChange={updateField}
-                  disabled={isSubmitting}
-                  required
-                >
-                  <option value="">Select campus</option>
+            <label className="pulse-auth-field">
+              <span>Password</span>
 
-                  {CAMPUSES.map((campus) => (
-                    <option value={campus} key={campus}>
-                      {campus}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="pulse-register-field">
-                <span>Residence</span>
-
-                <select
-                  name="residence"
-                  value={form.residence}
-                  onChange={updateField}
-                  disabled={isSubmitting}
-                  required
-                >
-                  <option value="">Select residence</option>
-
-                  {RESIDENCES.map((residence) => (
-                    <option value={residence} key={residence}>
-                      {residence}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="pulse-register-field">
-                <span>Year of study</span>
-
-                <select
-                  name="yearOfStudy"
-                  value={form.yearOfStudy}
-                  onChange={updateField}
-                  disabled={isSubmitting}
-                  required
-                >
-                  <option value="">Select year</option>
-
-                  {YEARS_OF_STUDY.map((year) => (
-                    <option value={year.value} key={year.value}>
-                      {year.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="pulse-register-field">
-                <span>Emergency contact name</span>
-
-                <input
-                  name="emergencyContactName"
-                  value={form.emergencyContactName}
-                  onChange={updateField}
-                  disabled={isSubmitting}
-                  required
-                />
-              </label>
-
-              <label className="pulse-register-field">
-                <span>Emergency contact phone</span>
-
-                <input
-                  name="emergencyContactPhone"
-                  type="tel"
-                  value={form.emergencyContactPhone}
-                  onChange={updateField}
-                  placeholder="0712345678"
-                  maxLength={10}
-                  disabled={isSubmitting}
-                  required
-                />
-              </label>
-
-              <label className="pulse-register-field">
-                <span>Password</span>
-
+              <div className="pulse-register-password">
                 <input
                   name="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={form.password}
                   onChange={updateField}
                   autoComplete="new-password"
+                  placeholder="At least 8 characters"
                   minLength={8}
                   disabled={isSubmitting}
                   required
                 />
-              </label>
 
-              <label className="pulse-register-field">
-                <span>Confirm password</span>
+                <button
+                  type="button"
+                  className="pulse-register-eye"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  onClick={() => setShowPassword((current) => !current)}
+                  disabled={isSubmitting}
+                >
+                  <EyeIcon visible={showPassword} />
+                </button>
+              </div>
+            </label>
 
+            <label className="pulse-auth-field">
+              <span>Confirm password</span>
+
+              <div
+                className={
+                  passwordsMatch === null
+                    ? 'pulse-register-password'
+                    : passwordsMatch
+                      ? 'pulse-register-password is-match'
+                      : 'pulse-register-password is-mismatch'
+                }
+              >
                 <input
                   name="confirmPassword"
-                  type="password"
+                  type={showConfirm ? 'text' : 'password'}
                   value={form.confirmPassword}
                   onChange={updateField}
                   autoComplete="new-password"
+                  placeholder="Re-enter your password"
                   minLength={8}
+                  aria-invalid={passwordsMatch === false}
+                  aria-describedby="pulse-password-match"
                   disabled={isSubmitting}
                   required
                 />
-              </label>
 
-              {message && (
-                <p className="pulse-register-message" role="alert">
-                  {message}
-                </p>
-              )}
+                <button
+                  type="button"
+                  className="pulse-register-eye"
+                  aria-label={
+                    showConfirm ? 'Hide confirm password' : 'Show confirm password'
+                  }
+                  onClick={() => setShowConfirm((current) => !current)}
+                  disabled={isSubmitting}
+                >
+                  <EyeIcon visible={showConfirm} />
+                </button>
+              </div>
 
-              <button
-                className="pulse-register-submit"
-                type="submit"
-                disabled={isSubmitting}
+              <small
+                id="pulse-password-match"
+                className={
+                  passwordsMatch === null
+                    ? 'pulse-register-match'
+                    : passwordsMatch
+                      ? 'pulse-register-match is-match'
+                      : 'pulse-register-match is-mismatch'
+                }
+                aria-live="polite"
               >
-                {isSubmitting
-                  ? 'Creating account...'
-                  : 'Create student account'}
-              </button>
-            </form>
+                {passwordsMatch === null
+                  ? '\u00a0'
+                  : passwordsMatch
+                    ? '\u2713 Passwords match'
+                    : '\u2717 Passwords do not match'}
+              </small>
+            </label>
 
+            {message && (
+              <p className="pulse-auth-message pulse-register-message" role="alert">
+                {message}
+              </p>
+            )}
+
+            <button
+              className="pulse-auth-submit pulse-register-submit"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting
+                ? 'Creating account...'
+                : isEmployee
+                  ? 'Create staff account'
+                  : 'Create student account'}
+            </button>
+          </form>
+
+          {!USE_BACKEND && (
             <p className="pulse-register-footer">
-              Already registered? <Link to="/login">Sign in</Link>
+              {isEmployee ? (
+                <>
+                  Are you a student?{' '}
+                  <Link className="pulse-auth-link" to="/register">
+                    Register as a student
+                  </Link>
+                </>
+              ) : (
+                <>
+                  Lecturer, security guard, cleaner or other campus employee?{' '}
+                  <Link className="pulse-auth-link" to="/register/staff">
+                    Register as university staff
+                  </Link>
+                </>
+              )}
             </p>
-          </div>
-        </section>
+          )}
+
+          <p className="pulse-register-footer">
+            Already registered?{' '}
+            <Link className="pulse-auth-link" to="/login">
+              Sign in
+            </Link>
+          </p>
+        </div>
       </section>
     </main>
   );

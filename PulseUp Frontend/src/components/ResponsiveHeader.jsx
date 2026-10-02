@@ -6,12 +6,14 @@ import './ResponsiveHeader.css';
 function ResponsiveHeader({
   ariaLabel = 'Page navigation',
   desktopAction,
+  desktopActions,
   identity,
   menuItems = [],
   onSignOut,
   variant = 'dashboard',
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const actions = desktopActions || (desktopAction ? [desktopAction] : []);
   const generatedId = useId().replace(/:/g, '');
   const menuId = `pulse-responsive-menu-${generatedId}`;
   const headerRef = useRef(null);
@@ -97,14 +99,15 @@ function ResponsiveHeader({
             </div>
           )}
 
-          {desktopAction && (
+          {actions.map((action) => (
             <Link
               className="pulse-responsive-header__desktop-link"
-              to={desktopAction.to}
+              to={action.to}
+              key={`${action.label}-${action.to}`}
             >
-              {desktopAction.label}
+              {action.label}
             </Link>
-          )}
+          ))}
 
           {onSignOut && (
             <button

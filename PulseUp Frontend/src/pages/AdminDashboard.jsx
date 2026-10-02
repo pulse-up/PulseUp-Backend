@@ -10,7 +10,53 @@ import {
 } from "react-router-dom";
 
 import api from "../api/api";
+import { clearSession } from "../utils/session";
 import ResponsiveHeader from "../components/ResponsiveHeader";
+
+const LIVE_REFRESH_MS = 30000;
+
+const ACTIVE_STATUSES = ["PENDING", "CONFIRMED", "RESCHEDULED"];
+
+const STATUS_LABELS = {
+    PENDING: "Pending",
+    CONFIRMED: "Confirmed",
+    RESCHEDULED: "Rescheduled",
+    COMPLETED: "Attended",
+    CANCELLED: "Cancelled",
+    NO_SHOW: "No-show",
+};
+
+function getSlotTime(slot, timeValue) {
+    if (!slot?.slotDate || !timeValue) {
+        return null;
+    }
+
+    const date = new Date(`${slot.slotDate}T${timeValue}`);
+
+    return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function isActiveStatus(status) {
+    return ACTIVE_STATUSES.includes(status || "PENDING");
+}
+
+// Upcoming means still to happen: active status and the slot has not finished.
+function isUpcomingAppointment(appointment, now) {
+    if (!isActiveStatus(appointment.status)) {
+        return false;
+    }
+
+    const end = getSlotTime(
+        appointment.timeSlot,
+        appointment.timeSlot?.endTime,
+    );
+
+    return !end || end >= now;
+}
+
+function isSameDay(date, now) {
+    return Boolean(date) && date.toDateString() === now.toDateString();
+}
 
 function AdminDashboard() {
     const navigate = useNavigate();
@@ -31,7 +77,7 @@ function AdminDashboard() {
                 error,
             );
 
-            localStorage.removeItem("pulseupUser");
+            clearSession();
             return {};
         }
     });
@@ -48,7 +94,16 @@ function AdminDashboard() {
     const [timeSlots, setTimeSlots] = useState([]);
 
     const [activeSection, setActiveSection] =
-        useState("users");
+        useState("overview");
+
+    const [appointmentView, setAppointmentView] =
+        useState("upcoming");
+
+    const [lastUpdated, setLastUpdated] =
+        useState(null);
+
+    const [remindedIds, setRemindedIds] =
+        useState({});
 
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(true);
@@ -56,10 +111,12 @@ function AdminDashboard() {
         useState("");
 
     const loadDashboardData = useCallback(
-        async () => {
+        async (silent = false) => {
             try {
-                setLoading(true);
-                setMessage("");
+                if (!silent) {
+                    setLoading(true);
+                    setMessage("");
+                }
 
                 const [
                     studentsResponse,
@@ -104,6 +161,8 @@ function AdminDashboard() {
                         ? slotsResponse.data
                         : [],
                 );
+
+                setLastUpdated(new Date());
             } catch (error) {
                 console.error(
                     "Admin dashboard loading failed:",
@@ -165,6 +224,21 @@ function AdminDashboard() {
         loadDashboardData,
     ]);
 
+    // Keep bookings, slots and staff availability live without a page reload.
+    useEffect(() => {
+        if (!user.userId || userRole !== "ADMIN") {
+            return undefined;
+        }
+
+        const timer = window.setInterval(() => {
+            if (document.visibilityState === "visible") {
+                loadDashboardData(true);
+            }
+        }, LIVE_REFRESH_MS);
+
+        return () => window.clearInterval(timer);
+    }, [user.userId, userRole, loadDashboardData]);
+
     async function handleDeleteUser(
         endpoint,
         userId,
@@ -221,20 +295,26 @@ function AdminDashboard() {
             setWorkingItem(itemKey);
             setMessage("");
 
-            await api.patch(
-                `/appointments/${appointmentId}/status`,
-                {},
-                {
-                    params: {
-                        status,
+            if (status === "CANCELLED") {
+                await api.patch(
+                    `/appointments/${appointmentId}/cancel`,
+                );
+            } else {
+                await api.patch(
+                    `/appointments/${appointmentId}/status`,
+                    {},
+                    {
+                        params: {
+                            status,
+                        },
                     },
-                },
-            );
+                );
+            }
 
             await loadDashboardData();
 
             setMessage(
-                `The appointment was changed to ${status}.`,
+                `The appointment was marked ${(STATUS_LABELS[status] || status).toLowerCase()}.`,
             );
         } catch (error) {
             console.error(
@@ -327,8 +407,86 @@ function AdminDashboard() {
         }
     }
 
+    async function handleSlotAvailability(slotId, available) {
+        const itemKey = `slot-${slotId}`;
+
+        try {
+            setWorkingItem(itemKey);
+            setMessage("");
+
+            await api.patch(
+                `/time-slots/${slotId}/availability`,
+                {},
+                {
+                    params: {
+                        available,
+                    },
+                },
+            );
+
+            await loadDashboardData(true);
+
+            setMessage(
+                available
+                    ? "The time slot is open for booking."
+                    : "The time slot is closed for booking.",
+            );
+        } catch (error) {
+            console.error(
+                "Time-slot availability update failed:",
+                error.response?.status,
+                error.response?.data || error.message,
+            );
+
+            setMessage(
+                "The time slot could not be updated.",
+            );
+        } finally {
+            setWorkingItem("");
+        }
+    }
+
+    async function handleSendReminder(appointment) {
+        const itemKey =
+            `reminder-${appointment.appointmentId}`;
+
+        const studentName =
+            `${appointment.student?.firstName || ""} ${appointment.student?.lastName || ""}`.trim() ||
+            "the student";
+
+        try {
+            setWorkingItem(itemKey);
+            setMessage("");
+
+            await api.post(
+                `/appointments/${appointment.appointmentId}/reminder`,
+            );
+
+            setRemindedIds((current) => ({
+                ...current,
+                [appointment.appointmentId]: true,
+            }));
+
+            setMessage(
+                `A reminder was sent to ${studentName}.`,
+            );
+        } catch (error) {
+            console.error(
+                "Reminder failed:",
+                error.response?.status,
+                error.response?.data || error.message,
+            );
+
+            setMessage(
+                `The reminder to ${studentName} could not be sent.`,
+            );
+        } finally {
+            setWorkingItem("");
+        }
+    }
+
     function handleLogout() {
-        localStorage.removeItem("pulseupUser");
+        clearSession();
 
         navigate("/login", {
             replace: true,
@@ -528,129 +686,443 @@ function AdminDashboard() {
         );
     }
 
-    function renderAppointments() {
-        if (appointments.length === 0) {
-            return (
-                <p className="empty-message">
-                    No appointments found.
-                </p>
-            );
-        }
+    function renderOverview() {
+        const now = new Date();
+
+        const upcoming = appointments.filter((appointment) =>
+            isUpcomingAppointment(appointment, now),
+        );
+
+        const bookedStudentIds = new Set(
+            upcoming.map(
+                (appointment) =>
+                    appointment.student?.userId ??
+                    appointment.appointmentId,
+            ),
+        );
+
+        const todaysAppointments = appointments.filter(
+            (appointment) =>
+                isSameDay(
+                    getSlotTime(
+                        appointment.timeSlot,
+                        appointment.timeSlot?.startTime,
+                    ),
+                    now,
+                ),
+        );
+
+        const countToday = (status) =>
+            todaysAppointments.filter(
+                (appointment) =>
+                    (appointment.status || "PENDING") === status,
+            ).length;
+
+        const openSlotsByStaff = {};
+
+        timeSlots.forEach((slot) => {
+            const end = getSlotTime(slot, slot.endTime);
+
+            if (
+                !slot.available ||
+                !end ||
+                end < now ||
+                !isSameDay(end, now)
+            ) {
+                return;
+            }
+
+            const staffId = slot.staff?.userId;
+
+            openSlotsByStaff[staffId] =
+                (openSlotsByStaff[staffId] || 0) + 1;
+        });
+
+        const clinicians = staff
+            .map((member) => {
+                const position = String(
+                    member.position || "",
+                ).toLowerCase();
+
+                return {
+                    member,
+                    role: position.includes("doctor")
+                        ? "Doctor"
+                        : position.includes("nurse")
+                            ? "Nurse"
+                            : "",
+                    openSlots:
+                        openSlotsByStaff[member.userId] || 0,
+                };
+            })
+            .filter((entry) => entry.role);
+
+        const availableCount = (role) =>
+            clinicians.filter(
+                (entry) =>
+                    entry.role === role && entry.openSlots > 0,
+            ).length;
+
+        const totalCount = (role) =>
+            clinicians.filter((entry) => entry.role === role)
+                .length;
 
         return (
-            <div className="admin-record-list">
-                {appointments.map((appointment) => {
-                    const status =
-                        appointment.status || "PENDING";
+            <div className="admin-record-groups">
+                <section className="admin-record-group">
+                    <h3>Right now</h3>
 
-                    const student = appointment.student;
-                    const slot = appointment.timeSlot;
-
-                    const itemKey =
-                        `appointment-${appointment.appointmentId}`;
-
-                    return (
-                        <article
-                            className={
-                                "admin-record-card " +
-                                "appointment-admin-card"
-                            }
-                            key={appointment.appointmentId}
-                        >
-                            <div>
-                                <strong>
-                                    {appointment.appointmentType}
-                                </strong>
-
-                                <span>
-                  {student?.firstName}{" "}
-                                    {student?.lastName}
-                </span>
-
-                                <span>
-                  {slot?.slotDate}
-                                    {" · "}
-                                    {slot?.startTime}
-                                    {" – "}
-                                    {slot?.endTime}
-                </span>
-
-                                <span
-                                    className={
-                                        `appointment-status ` +
-                                        status.toLowerCase()
-                                    }
-                                >
-                  {status}
-                </span>
-                            </div>
-
-                            <div className="admin-card-actions">
-                                {(status === "PENDING" ||
-                                    status === "RESCHEDULED") && (
-                                    <button
-                                        type="button"
-                                        className="primary-button"
-                                        disabled={
-                                            workingItem === itemKey
-                                        }
-                                        onClick={() =>
-                                            handleAppointmentStatus(
-                                                appointment.appointmentId,
-                                                "CONFIRMED",
-                                            )
-                                        }
-                                    >
-                                        {workingItem === itemKey
-                                            ? "Updating..."
-                                            : "Confirm"}
-                                    </button>
-                                )}
-
-                                {status === "CONFIRMED" && (
-                                    <button
-                                        type="button"
-                                        className="complete-button"
-                                        disabled={
-                                            workingItem === itemKey
-                                        }
-                                        onClick={() =>
-                                            handleAppointmentStatus(
-                                                appointment.appointmentId,
-                                                "COMPLETED",
-                                            )
-                                        }
-                                    >
-                                        {workingItem === itemKey
-                                            ? "Updating..."
-                                            : "Complete"}
-                                    </button>
-                                )}
-
-                                {(status === "CANCELLED" ||
-                                    status === "COMPLETED") && (
-                                    <button
-                                        type="button"
-                                        className="danger-button"
-                                        disabled={
-                                            workingItem === itemKey
-                                        }
-                                        onClick={() =>
-                                            handleDeleteAppointment(
-                                                appointment.appointmentId,
-                                            )
-                                        }
-                                    >
-                                        {workingItem === itemKey
-                                            ? "Removing..."
-                                            : "Remove"}
-                                    </button>
-                                )}
-                            </div>
+                    <div className="admin-summary-grid admin-live-grid">
+                        <article>
+                            <span>Students booked</span>
+                            <strong>{bookedStudentIds.size}</strong>
                         </article>
-                    );
-                })}
+
+                        <article>
+                            <span>Upcoming appointments</span>
+                            <strong>{upcoming.length}</strong>
+                        </article>
+
+                        <article>
+                            <span>Doctors available</span>
+                            <strong>
+                                {availableCount("Doctor")} of{" "}
+                                {totalCount("Doctor")}
+                            </strong>
+                        </article>
+
+                        <article>
+                            <span>Nurses available</span>
+                            <strong>
+                                {availableCount("Nurse")} of{" "}
+                                {totalCount("Nurse")}
+                            </strong>
+                        </article>
+                    </div>
+
+                    <p className="muted-text">
+                        {lastUpdated
+                            ? `Updates every 30 seconds. Last updated ${lastUpdated.toLocaleTimeString()}.`
+                            : "Updates every 30 seconds."}
+                    </p>
+                </section>
+
+                <section className="admin-record-group">
+                    <h3>Today's appointments</h3>
+
+                    <div className="admin-summary-grid admin-live-grid">
+                        <article>
+                            <span>Still to happen</span>
+                            <strong>
+                                {countToday("PENDING") +
+                                    countToday("CONFIRMED") +
+                                    countToday("RESCHEDULED")}
+                            </strong>
+                        </article>
+
+                        <article>
+                            <span>Attended</span>
+                            <strong>{countToday("COMPLETED")}</strong>
+                        </article>
+
+                        <article>
+                            <span>Cancelled</span>
+                            <strong>{countToday("CANCELLED")}</strong>
+                        </article>
+
+                        <article>
+                            <span>No-show</span>
+                            <strong>{countToday("NO_SHOW")}</strong>
+                        </article>
+                    </div>
+                </section>
+
+                <section className="admin-record-group">
+                    <h3>Doctors and nurses today</h3>
+
+                    {clinicians.length === 0 ? (
+                        <p className="empty-message">
+                            No doctors or nurses found. Staff are
+                            listed here when their position
+                            includes "Doctor" or "Nurse".
+                        </p>
+                    ) : (
+                        <div className="admin-record-list">
+                            {clinicians.map(
+                                ({ member, role, openSlots }) => (
+                                    <article
+                                        className="admin-record-card"
+                                        key={member.userId}
+                                    >
+                                        <div>
+                                            <strong>
+                                                {member.firstName}{" "}
+                                                {member.lastName}
+                                            </strong>
+
+                                            <span>{role}</span>
+
+                                            <span
+                                                className={
+                                                    openSlots > 0
+                                                        ? "slot-status available"
+                                                        : "slot-status booked"
+                                                }
+                                            >
+                                                {openSlots > 0
+                                                    ? `Available · ${openSlots} open ${openSlots === 1 ? "slot" : "slots"}`
+                                                    : "No open slots"}
+                                            </span>
+                                        </div>
+                                    </article>
+                                ),
+                            )}
+                        </div>
+                    )}
+                </section>
             </div>
+        );
+    }
+
+    function renderAppointments() {
+        const now = new Date();
+
+        const startOf = (appointment) =>
+            getSlotTime(
+                appointment.timeSlot,
+                appointment.timeSlot?.startTime,
+            )?.getTime() || 0;
+
+        const upcoming = appointments
+            .filter((appointment) =>
+                isUpcomingAppointment(appointment, now),
+            )
+            .sort((first, second) => startOf(first) - startOf(second));
+
+        const past = appointments
+            .filter(
+                (appointment) =>
+                    !isUpcomingAppointment(appointment, now),
+            )
+            .sort((first, second) => startOf(second) - startOf(first));
+
+        const visible =
+            appointmentView === "upcoming" ? upcoming : past;
+
+        return (
+            <>
+                <nav className="admin-navigation">
+                    <button
+                        type="button"
+                        className={
+                            appointmentView === "upcoming"
+                                ? "booking-tab active"
+                                : "booking-tab"
+                        }
+                        onClick={() =>
+                            setAppointmentView("upcoming")
+                        }
+                    >
+                        Upcoming ({upcoming.length})
+                    </button>
+
+                    <button
+                        type="button"
+                        className={
+                            appointmentView === "past"
+                                ? "booking-tab active"
+                                : "booking-tab"
+                        }
+                        onClick={() => setAppointmentView("past")}
+                    >
+                        Past ({past.length})
+                    </button>
+                </nav>
+
+                {visible.length === 0 ? (
+                    <p className="empty-message">
+                        {appointmentView === "upcoming"
+                            ? "No upcoming appointments."
+                            : "No past appointments."}
+                    </p>
+                ) : (
+                    <div className="admin-record-list">
+                        {visible.map((appointment) => {
+                            const status =
+                                appointment.status || "PENDING";
+
+                            const student = appointment.student;
+                            const slot = appointment.timeSlot;
+
+                            const itemKey =
+                                `appointment-${appointment.appointmentId}`;
+
+                            const reminderKey =
+                                `reminder-${appointment.appointmentId}`;
+
+                            const busy = workingItem === itemKey;
+
+                            const canRemind =
+                                appointmentView === "upcoming" &&
+                                (status === "CONFIRMED" ||
+                                    status === "RESCHEDULED");
+
+                            return (
+                                <article
+                                    className={
+                                        "admin-record-card " +
+                                        "appointment-admin-card"
+                                    }
+                                    key={appointment.appointmentId}
+                                >
+                                    <div>
+                                        <strong>
+                                            {appointment.appointmentType}
+                                        </strong>
+
+                                        <span>
+                                            {student?.firstName}{" "}
+                                            {student?.lastName}
+                                        </span>
+
+                                        <span>
+                                            {slot?.slotDate}
+                                            {" · "}
+                                            {slot?.startTime}
+                                            {" – "}
+                                            {slot?.endTime}
+                                        </span>
+
+                                        <span
+                                            className={
+                                                `appointment-status ` +
+                                                status.toLowerCase()
+                                            }
+                                        >
+                                            {STATUS_LABELS[status] ||
+                                                status}
+                                        </span>
+                                    </div>
+
+                                    <div className="admin-card-actions">
+                                        {(status === "PENDING" ||
+                                            status === "RESCHEDULED") && (
+                                            <button
+                                                type="button"
+                                                className="primary-button"
+                                                disabled={busy}
+                                                onClick={() =>
+                                                    handleAppointmentStatus(
+                                                        appointment.appointmentId,
+                                                        "CONFIRMED",
+                                                    )
+                                                }
+                                            >
+                                                {busy
+                                                    ? "Updating..."
+                                                    : "Confirm"}
+                                            </button>
+                                        )}
+
+                                        {status === "CONFIRMED" && (
+                                            <>
+                                                <button
+                                                    type="button"
+                                                    className="complete-button"
+                                                    disabled={busy}
+                                                    onClick={() =>
+                                                        handleAppointmentStatus(
+                                                            appointment.appointmentId,
+                                                            "COMPLETED",
+                                                        )
+                                                    }
+                                                >
+                                                    {busy
+                                                        ? "Updating..."
+                                                        : "Attended"}
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    className="danger-button"
+                                                    disabled={busy}
+                                                    onClick={() =>
+                                                        handleAppointmentStatus(
+                                                            appointment.appointmentId,
+                                                            "NO_SHOW",
+                                                        )
+                                                    }
+                                                >
+                                                    No-show
+                                                </button>
+                                            </>
+                                        )}
+
+                                        {isActiveStatus(status) && (
+                                            <button
+                                                type="button"
+                                                className="danger-button"
+                                                disabled={busy}
+                                                onClick={() =>
+                                                    handleAppointmentStatus(
+                                                        appointment.appointmentId,
+                                                        "CANCELLED",
+                                                    )
+                                                }
+                                            >
+                                                Cancel
+                                            </button>
+                                        )}
+
+                                        {canRemind && (
+                                            <button
+                                                type="button"
+                                                className="primary-button"
+                                                disabled={
+                                                    workingItem ===
+                                                    reminderKey
+                                                }
+                                                onClick={() =>
+                                                    handleSendReminder(
+                                                        appointment,
+                                                    )
+                                                }
+                                            >
+                                                {workingItem ===
+                                                reminderKey
+                                                    ? "Sending..."
+                                                    : remindedIds[
+                                                            appointment
+                                                                .appointmentId
+                                                        ]
+                                                      ? "Send again"
+                                                      : "Send reminder"}
+                                            </button>
+                                        )}
+
+                                        {!isActiveStatus(status) && (
+                                            <button
+                                                type="button"
+                                                className="danger-button"
+                                                disabled={busy}
+                                                onClick={() =>
+                                                    handleDeleteAppointment(
+                                                        appointment.appointmentId,
+                                                    )
+                                                }
+                                            >
+                                                {busy
+                                                    ? "Removing..."
+                                                    : "Remove"}
+                                            </button>
+                                        )}
+                                    </div>
+                                </article>
+                            );
+                        })}
+                    </div>
+                )}
+            </>
         );
     }
 
@@ -663,11 +1135,35 @@ function AdminDashboard() {
             );
         }
 
+        // A closed slot has no active booking; a booked slot does.
+        const bookedSlotIds = new Set(
+            appointments
+                .filter((appointment) =>
+                    isActiveStatus(appointment.status),
+                )
+                .map((appointment) => appointment.timeSlot?.slotId),
+        );
+
         return (
             <div className="admin-record-list">
                 {timeSlots.map((slot) => {
                     const itemKey =
                         `slot-${slot.slotId}`;
+
+                    const isBooked =
+                        bookedSlotIds.has(slot.slotId);
+
+                    const stateClass = slot.available
+                        ? "available"
+                        : isBooked
+                            ? "booked"
+                            : "unavailable";
+
+                    const stateLabel = slot.available
+                        ? "Available"
+                        : isBooked
+                            ? "Booked"
+                            : "Closed";
 
                     return (
                         <article
@@ -678,45 +1174,61 @@ function AdminDashboard() {
                                 <strong>{slot.slotDate}</strong>
 
                                 <span>
-                  {slot.startTime}
+                                    {slot.startTime}
                                     {" – "}
                                     {slot.endTime}
-                </span>
+                                </span>
 
                                 <span>
-                  {slot.staff
-                      ? `${slot.staff.firstName} ${slot.staff.lastName}`
-                      : `Slot ID: ${slot.slotId}`}
-                </span>
+                                    {slot.staff
+                                        ? `${slot.staff.firstName} ${slot.staff.lastName}`
+                                        : `Slot ID: ${slot.slotId}`}
+                                </span>
 
                                 <span
-                                    className={
-                                        slot.available
-                                            ? "slot-status available"
-                                            : "slot-status booked"
-                                    }
+                                    className={`slot-status ${stateClass}`}
                                 >
-                  {slot.available
-                      ? "Available"
-                      : "Booked"}
-                </span>
+                                    {stateLabel}
+                                </span>
                             </div>
 
-                            {slot.available && (
-                                <button
-                                    type="button"
-                                    className="danger-button"
-                                    disabled={
-                                        workingItem === itemKey
-                                    }
-                                    onClick={() =>
-                                        handleDeleteSlot(slot.slotId)
-                                    }
-                                >
-                                    {workingItem === itemKey
-                                        ? "Deleting..."
-                                        : "Delete"}
-                                </button>
+                            {!isBooked && (
+                                <div className="admin-card-actions">
+                                    <button
+                                        type="button"
+                                        className="primary-button"
+                                        disabled={
+                                            workingItem === itemKey
+                                        }
+                                        onClick={() =>
+                                            handleSlotAvailability(
+                                                slot.slotId,
+                                                !slot.available,
+                                            )
+                                        }
+                                    >
+                                        {slot.available
+                                            ? "Close slot"
+                                            : "Open slot"}
+                                    </button>
+
+                                    {slot.available && (
+                                        <button
+                                            type="button"
+                                            className="danger-button"
+                                            disabled={
+                                                workingItem === itemKey
+                                            }
+                                            onClick={() =>
+                                                handleDeleteSlot(
+                                                    slot.slotId,
+                                                )
+                                            }
+                                        >
+                                            Delete
+                                        </button>
+                                    )}
+                                </div>
                             )}
                         </article>
                     );
@@ -729,12 +1241,18 @@ function AdminDashboard() {
         <main className="student-dashboard admin-dashboard">
             <ResponsiveHeader
                 ariaLabel="Administrator dashboard navigation"
+                desktopAction={{ label: "Back to home", to: "/" }}
                 identity={{
                     name: `${user.firstName || "Administrator"} ${user.lastName || ""}`.trim(),
                     detail: "Administrator",
                 }}
                 menuItems={[
                     { label: "Home", to: "/" },
+                    {
+                        label: "Overview",
+                        active: activeSection === "overview",
+                        onSelect: () => setActiveSection("overview"),
+                    },
                     {
                         label: "User records",
                         active: activeSection === "users",
@@ -754,6 +1272,10 @@ function AdminDashboard() {
                         label: "Create account",
                         to: "/admin/create-account",
                     },
+                    { label: "My Profile", to: "/admin/profile" },
+                    { label: "Sick Notes", to: "/admin/sick-notes" },
+                    { label: "Health Quests", to: "/admin/health-quests" },
+                    { label: "Clinic History", to: "/admin/history" },
                 ]}
                 onSignOut={handleLogout}
             />
@@ -766,8 +1288,8 @@ function AdminDashboard() {
                 <h1>PulseUp system management.</h1>
 
                 <p>
-                    Manage users, bookings, and clinic
-                    availability.
+                    Track live bookings, manage clinic time slots
+                    and appointment outcomes, and manage users.
                 </p>
             </section>
 
@@ -828,6 +1350,20 @@ function AdminDashboard() {
                     <button
                         type="button"
                         className={
+                            activeSection === "overview"
+                                ? "booking-tab active"
+                                : "booking-tab"
+                        }
+                        onClick={() =>
+                            setActiveSection("overview")
+                        }
+                    >
+                        Overview
+                    </button>
+
+                    <button
+                        type="button"
+                        className={
                             activeSection === "users"
                                 ? "booking-tab active"
                                 : "booking-tab"
@@ -875,6 +1411,9 @@ function AdminDashboard() {
                         </p>
                     ) : (
                         <>
+                            {activeSection === "overview" &&
+                                renderOverview()}
+
                             {activeSection === "users" &&
                                 renderUsers()}
 

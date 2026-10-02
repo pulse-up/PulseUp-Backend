@@ -230,10 +230,10 @@ function AdminCreateAccountPage() {
                 <ResponsiveHeader
                     variant="panel"
                     ariaLabel="Account creation navigation"
-                    desktopAction={{
-                        label: "Admin dashboard",
-                        to: "/admin/dashboard",
-                    }}
+                    desktopActions={[
+                        { label: "Back to home", to: "/" },
+                        { label: "Admin dashboard", to: "/admin/dashboard" },
+                    ]}
                     menuItems={[
                         {
                             label: "Admin dashboard",

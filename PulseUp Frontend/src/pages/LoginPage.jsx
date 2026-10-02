@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import api from '../api/api';
-import clinicImage from '../assets/pulseup-login-clinic.png';
+import AuthBackground from '../components/AuthBackground';
 import ResponsiveHeader from '../components/ResponsiveHeader';
 
 import './LoginPage.css';
@@ -11,14 +11,6 @@ const INITIAL_FORM = {
   email: '',
   password: '',
 };
-
-function CheckIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="m6.5 12.5 3.2 3.2 7.8-8" />
-    </svg>
-  );
-}
 
 function LockIcon() {
   return (
@@ -61,6 +53,9 @@ function getDashboardPath(role) {
   switch (normalizeRole(role)) {
     case 'STUDENT':
       return '/student/dashboard';
+
+    case 'EMPLOYEE':
+      return '/employee/dashboard';
 
     case 'STAFF':
       return '/staff/dashboard';
@@ -165,6 +160,9 @@ function LoginPage() {
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [resendNotice, setResendNotice] = useState('');
+  const [isResending, setIsResending] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('pulseupUser');
@@ -201,6 +199,31 @@ function LoginPage() {
     }));
 
     setMessage('');
+    setNeedsVerification(false);
+    setResendNotice('');
+  }
+
+  async function handleResendVerification() {
+    if (isResending) {
+      return;
+    }
+
+    setIsResending(true);
+    setResendNotice('');
+
+    try {
+      await api.post('/auth/resend-verification', {
+        email: form.email.trim().toLowerCase(),
+      });
+
+      setResendNotice('A new verification email is on its way.');
+    } catch (error) {
+      console.error('Resend verification failed:', error);
+
+      setResendNotice('We could not send the email. Please try again shortly.');
+    } finally {
+      setIsResending(false);
+    }
   }
 
   function validateForm() {
@@ -228,6 +251,8 @@ function LoginPage() {
     }
 
     setMessage('');
+    setNeedsVerification(false);
+    setResendNotice('');
     setIsSubmitting(true);
 
     try {
@@ -276,6 +301,11 @@ function LoginPage() {
         );
       } else if (error.message === 'UNSUPPORTED_ROLE') {
         setMessage('The account has an unsupported role.');
+      } else if (error.response?.data?.code === 'EMAIL_NOT_VERIFIED') {
+        setMessage(
+          'Please verify your email address before signing in. Check your inbox for the verification link.',
+        );
+        setNeedsVerification(true);
       } else {
         setMessage(getLoginError(error));
       }
@@ -285,176 +315,129 @@ function LoginPage() {
   }
 
   return (
-    <main className="pulse-login-page">
-      <div
-        className="pulse-login-pattern pulse-login-pattern-left"
-        aria-hidden="true"
-      />
-
-      <div
-        className="pulse-login-pattern pulse-login-pattern-right"
-        aria-hidden="true"
-      />
+    <main className="pulse-auth-page pulse-login-page">
+      <AuthBackground />
 
       <section
-        className="pulse-login-shell"
+        className="pulse-auth-card pulse-login-card"
         aria-label="PulseUp account sign in"
       >
-        <aside className="pulse-login-visual">
-          <img
-            src={clinicImage}
-            alt="Student speaking to a campus healthcare professional"
-          />
+        <ResponsiveHeader
+          variant="auth"
+          ariaLabel="Sign-in page navigation"
+          desktopAction={{ label: 'Back to home', to: '/' }}
+          menuItems={[
+            { label: 'Home', to: '/' },
+            { label: 'Sign in', to: '/login', active: true },
+            { label: 'Create student account', to: '/register' },
+          ]}
+        />
 
-          <div className="pulse-login-image-overlay" aria-hidden="true" />
+        <div className="pulse-login-content">
+          <div className="pulse-login-heading">
+            <h1 className="pulse-auth-title">Sign in</h1>
 
-          <div className="pulse-login-visual-pattern" aria-hidden="true">
-            <span />
-            <span />
+            <span className="pulse-auth-lead">
+              Enter your email and password to continue.
+            </span>
           </div>
 
-          <div className="pulse-login-status">
-            <span />
-            Campus healthcare online
-          </div>
+          <form className="pulse-login-form" onSubmit={handleSubmit}>
+            <label className="pulse-auth-field pulse-login-field">
+              <span>Email address</span>
 
-          <div className="pulse-login-visual-card">
-            <p>STUDENT WELLNESS</p>
-
-            <h2>Healthcare access built around your campus life.</h2>
-
-            <div className="pulse-login-benefits">
-              <span>
+              <div className="pulse-login-input-wrapper">
                 <i>
-                  <CheckIcon />
+                  <MailIcon />
                 </i>
-                Book appointments
-              </span>
 
-              <span>
+                <input
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={updateField}
+                  autoComplete="email"
+                  placeholder="name@example.com"
+                  disabled={isSubmitting}
+                  required
+                  autoFocus
+                />
+              </div>
+            </label>
+
+            <label className="pulse-auth-field pulse-login-field">
+              <span>Password</span>
+
+              <div className="pulse-login-input-wrapper">
                 <i>
-                  <CheckIcon />
+                  <LockIcon />
                 </i>
-                Follow your queue
-              </span>
 
-              <span>
-                <i>
-                  <CheckIcon />
-                </i>
-                Earn Health Points
-              </span>
-            </div>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={form.password}
+                  onChange={updateField}
+                  autoComplete="current-password"
+                  placeholder="Enter your password"
+                  disabled={isSubmitting}
+                  required
+                />
+
+                <button
+                  type="button"
+                  className="pulse-login-password-toggle"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  onClick={() => setShowPassword((currentValue) => !currentValue)}
+                  disabled={isSubmitting}
+                >
+                  <EyeIcon visible={showPassword} />
+                </button>
+              </div>
+            </label>
+
+            {message && (
+              <p className="pulse-auth-message" role="alert">
+                {message}
+              </p>
+            )}
+
+            {needsVerification && (
+              <div className="pulse-login-resend">
+                <button
+                  type="button"
+                  onClick={handleResendVerification}
+                  disabled={isResending}
+                >
+                  {isResending ? 'Sending...' : 'Resend verification email'}
+                </button>
+
+                {resendNotice && <small>{resendNotice}</small>}
+              </div>
+            )}
+
+
+            <button
+              type="submit"
+              className="pulse-auth-submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Signing in...' : 'Sign in'}
+            </button>
+          </form>
+
+          <div className="pulse-login-divider">
+            <span>Don't have an account?</span>
           </div>
-        </aside>
 
-        <section className="pulse-login-form-panel">
-          <ResponsiveHeader
-            variant="auth"
-            ariaLabel="Sign-in page navigation"
-            desktopAction={{ label: 'Back to home', to: '/' }}
-            menuItems={[
-              { label: 'Home', to: '/' },
-              { label: 'Sign in', to: '/login', active: true },
-              { label: 'Create student account', to: '/register' },
-            ]}
-          />
+          <Link className="pulse-login-register" to="/register">
+            Create a student account
+          </Link>
 
-          <div className="pulse-login-content">
-            <div className="pulse-login-heading">
-              <p>SECURE SIGN IN</p>
-
-              <h1>Welcome back</h1>
-
-              <span>Sign in to access your PulseUp healthcare dashboard.</span>
-            </div>
-
-            <form className="pulse-login-form" onSubmit={handleSubmit}>
-              <label className="pulse-login-field">
-                <span>Email address</span>
-
-                <div className="pulse-login-input-wrapper">
-                  <i>
-                    <MailIcon />
-                  </i>
-
-                  <input
-                    type="email"
-                    name="email"
-                    value={form.email}
-                    onChange={updateField}
-                    autoComplete="email"
-                    placeholder="name@example.com"
-                    disabled={isSubmitting}
-                    required
-                    autoFocus
-                  />
-                </div>
-              </label>
-
-              <label className="pulse-login-field">
-                <span>Password</span>
-
-                <div className="pulse-login-input-wrapper">
-                  <i>
-                    <LockIcon />
-                  </i>
-
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    name="password"
-                    value={form.password}
-                    onChange={updateField}
-                    autoComplete="current-password"
-                    placeholder="Enter your password"
-                    disabled={isSubmitting}
-                    required
-                  />
-
-                  <button
-                    type="button"
-                    className="pulse-login-password-toggle"
-                    aria-label={
-                      showPassword ? 'Hide password' : 'Show password'
-                    }
-                    onClick={() =>
-                      setShowPassword((currentValue) => !currentValue)
-                    }
-                    disabled={isSubmitting}
-                  >
-                    <EyeIcon visible={showPassword} />
-                  </button>
-                </div>
-              </label>
-
-              {message && (
-                <p className="pulse-login-message" role="alert">
-                  {message}
-                </p>
-              )}
-
-              <button
-                type="submit"
-                className="pulse-login-submit"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Signing in...' : 'Sign in securely'}
-              </button>
-            </form>
-
-            <div className="pulse-login-divider">
-              <span>New to PulseUp?</span>
-            </div>
-
-            <Link className="pulse-login-register" to="/register">
-              Create a student account
-            </Link>
-
-            <p className="pulse-login-support">
-              Staff and administrators use the same secure sign-in form.
-            </p>
-          </div>
-        </section>
+          <p className="pulse-login-support">
+            Staff and administrators use the same sign-in form.
+          </p>
+        </div>
       </section>
     </main>
   );
